@@ -1,0 +1,7 @@
+plugins {
+    id 'base'
+}
+
+allprojects {
+    apply plugin: 'base'
+}
