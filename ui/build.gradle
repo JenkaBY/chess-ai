@@ -1,0 +1,79 @@
+plugins {
+    id 'com.github.node-gradle.node' version '7.1.0'
+}
+
+ext {
+    angulaCliVersion = '21.0.1'
+}
+
+clean {
+    delete "${project.projectDir}/dist"
+    delete "${project.projectDir}/build"
+}
+
+node {
+    // Version of node to use.
+    version = '24.11.1'
+
+    // Version of npm to use.
+//    npmVersion = '2.1.5'
+
+    // Version of Yarn to use.
+//    yarnVersion = '0.16.1'
+
+// Base URL for fetching node distributions (change if you have a mirror).
+//    distBaseUrl = 'https://nodejs.org/dist'
+
+    // If true, it will download node using above parameters.
+    // If false, it will try to use globally installed node.
+    download = true
+
+    // Set the work directory for unpacking node
+    workDir = file("${projectDir}/nodejs")
+
+    // Set the work directory for NPM
+    npmWorkDir = file("${projectDir}/npm")
+
+    // Set the work directory for Yarn
+    yarnWorkDir = file("${projectDir}/yarn")
+}
+
+tasks.register('generateAngularApp', NpxTask) {
+    command = "@angular/cli@${angulaCliVersion}"
+    args = ['new', 'ui', '--directory', '.', '--skip-git']
+}
+
+tasks.register('helpAngularApp', NpxTask) {
+    command = "@angular/cli@${angulaCliVersion}"
+    args = ['new', 'help']
+}
+
+tasks.register('ngServe', NpxTask) {
+    dependsOn npmInstall
+    command = 'ng'
+    args = ['serve', '--open']
+}
+
+tasks.register('buildAngularApp', NpxTask) {
+    dependsOn npmInstall
+    command = 'ng'
+    args = ['build']
+    inputs.files(
+            'angular.json',
+            'package.json',
+            'package-lock.json',
+            'tsconfig.json',
+            'tsconfig.app.json')
+    inputs.dir('src')
+    inputs.dir(fileTree("node_modules").exclude(".cache"))
+    outputs.dir('dist')
+}
+
+tasks.register('installDevPackage', NpmTask) {
+    args = ['install', 'tslint-angular', '--save-dev']
+}
+
+tasks.register('auditForceFix', NpmTask) {
+    // install the express package only
+    args = ['audit', 'fix', '--force']
+}
