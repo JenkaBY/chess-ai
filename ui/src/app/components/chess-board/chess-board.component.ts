@@ -14,35 +14,53 @@ import {BoardPosition} from '../../models/board-position';
   imports: [CommonModule, BoardSquareComponent],
   template: `
     <div class="chess-board-container">
-      <div class="chess-board" role="grid" aria-label="Chess board">
-        @for (row of boardRows; track row; let rowIndex = $index) {
-          <div class="board-row" role="row">
-            @for (col of boardCols; track col; let colIndex = $index) {
-              <app-board-square
-                [position]="{ row: rowIndex, col: colIndex }"
-                [piece]="getPieceAt(rowIndex, colIndex)"
-                [isLight]="isLightSquare(rowIndex, colIndex)"
-                [isSelected]="isSquareSelected(rowIndex, colIndex)"
-                [isValidMove]="isSquareValidMove(rowIndex, colIndex)"
-                [isHighlighted]="isSquareHighlighted(rowIndex, colIndex)"
-                (squareClicked)="onSquareClick($event)"
-              />
-            }
-          </div>
+      <div class="board-files board-files-top">
+        @for (file of files; track file) {
+          <span>{{ file }}</span>
         }
       </div>
 
-      <div class="board-coordinates">
-        <div class="files">
-          @for (file of files; track file) {
-            <span>{{ file }}</span>
-          }
-        </div>
-        <div class="ranks">
+      <!-- Main board with ranks on both sides -->
+      <div class="board-main-row">
+        <!-- Left rank numbers -->
+        <div class="board-ranks board-ranks-left">
           @for (rank of ranks; track rank) {
             <span>{{ rank }}</span>
           }
         </div>
+
+        <!-- Chess board -->
+        <div class="chess-board" role="grid" aria-label="Chess board">
+          @for (row of boardRows; track row; let rowIndex = $index) {
+            <div class="board-row" role="row">
+              @for (col of boardCols; track col; let colIndex = $index) {
+                <app-board-square
+                  [position]="{ row: rowIndex, col: colIndex }"
+                  [piece]="getPieceAt(rowIndex, colIndex)"
+                  [isLight]="isLightSquare(rowIndex, colIndex)"
+                  [isSelected]="isSquareSelected(rowIndex, colIndex)"
+                  [isValidMove]="isSquareValidMove(rowIndex, colIndex)"
+                  [isHighlighted]="isSquareHighlighted(rowIndex, colIndex)"
+                  (squareClicked)="onSquareClick($event)"
+                />
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Right rank numbers -->
+        <div class="board-ranks board-ranks-right">
+          @for (rank of ranks; track rank) {
+            <span>{{ rank }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- File letters at the bottom -->
+      <div class="board-files board-files-bottom">
+        @for (file of files; track file) {
+          <span>{{ file }}</span>
+        }
       </div>
     </div>
   `,
@@ -50,7 +68,14 @@ import {BoardPosition} from '../../models/board-position';
     .chess-board-container {
       position: relative;
       display: inline-block;
-      padding: 20px;
+      padding: 40px 60px;
+      background: transparent;
+    }
+
+    .board-main-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
     }
 
     .chess-board {
@@ -60,6 +85,7 @@ import {BoardPosition} from '../../models/board-position';
       height: 600px;
       border: 2px solid #333;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      position: relative;
     }
 
     .board-row {
@@ -67,55 +93,74 @@ import {BoardPosition} from '../../models/board-position';
       grid-template-columns: repeat(8, 1fr);
     }
 
-    .board-coordinates {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    .files {
-      position: absolute;
-      bottom: 0;
-      left: 20px;
-      right: 20px;
+    .board-files {
       display: flex;
-      justify-content: space-around;
-      padding: 2px 0;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 600px;
+      margin: 0 auto;
       font-weight: bold;
       color: #333;
+      font-size: 1.2rem;
+      user-select: none;
     }
 
-    .files span {
+    .board-files-top {
+      margin-bottom: 8px;
+    }
+
+    .board-files-bottom {
+      margin-top: 8px;
+    }
+
+    .board-files span {
       width: calc(100% / 8);
       text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .ranks {
-      position: absolute;
-      left: 0;
-      top: 20px;
-      bottom: 20px;
+    .board-ranks {
       display: flex;
-      flex-direction: column-reverse;
-      justify-content: space-around;
-      padding: 0 2px;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 600px;
       font-weight: bold;
       color: #333;
+      font-size: 1.2rem;
+      user-select: none;
     }
 
-    .ranks span {
+    .board-ranks-left {
+      margin-right: 8px;
+    }
+
+    .board-ranks-right {
+      margin-left: 8px;
+    }
+
+    .board-ranks span {
       height: calc(100% / 8);
       display: flex;
       align-items: center;
+      justify-content: center;
     }
 
     @media (max-width: 768px) {
-      .chess-board {
+      .chess-board, .board-files {
         width: 400px;
         height: 400px;
+        font-size: 1rem;
+      }
+
+      .board-ranks {
+        height: 400px;
+        font-size: 1rem;
+      }
+
+      .chess-board-container {
+        padding: 20px 30px;
       }
     }
   `],
@@ -125,7 +170,7 @@ export class ChessBoardComponent {
   boardRows = Array(8).fill(0);
   boardCols = Array(8).fill(0);
   files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
-  ranks = ['1', '2', '3', '4', '5', '6', '7', '8'];
+  ranks = ['8', '7', '6', '5', '4', '3', '2', '1']; // 8 at top, 1 at bottom
 
   private selectedSquare = signal<BoardPosition | null>(null);
   private validMoves = signal<BoardPosition[]>([]);
