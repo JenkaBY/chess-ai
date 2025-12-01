@@ -1,0 +1,112 @@
+<div class="game-tab">
+  <!-- Current Turn Status -->
+  <div class="status-section">
+    <div class="status-item">
+      <strong>Current Turn:</strong>
+      <span [class.white-turn]="gameService.currentTurn() === 'WHITE'"
+            [class.black-turn]="gameService.currentTurn() === 'BLACK'">
+        {{ gameService.currentTurn() }}
+      </span>
+    </div>
+
+    @if (gameService.isCheck()) {
+      <div class="status-item alert">
+        <strong>⚠️ CHECK!</strong>
+      </div>
+    }
+
+    @if (gameService.isCheckmate()) {
+      <div class="status-item alert">
+        <strong>♔ CHECKMATE!</strong>
+        <p>{{ getWinner() }} wins!</p>
+      </div>
+    }
+
+    @if (gameService.isStalemate()) {
+      <div class="status-item alert">
+        <strong>Draw by Stalemate</strong>
+      </div>
+    }
+  </div>
+
+  <!-- Move Input Section with Help Button -->
+  <div class="notation-input-section">
+    <div class="title-container">
+      <h3>Enter Move</h3>
+      <button
+        type="button"
+        class="help-btn"
+        aria-label="Show Help"
+        (click)="toggleHelp()"
+      >?
+      </button>
+    </div>
+    <div class="input-group">
+      <input
+        type="text"
+        [ngModel]="moveNotation"
+        (ngModelChange)="onMoveNotationChange($event)"
+        placeholder="e.g., e4, Nf3, O-O"
+        (keydown.enter)="submitMove()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+        aria-label="Enter chess move in algebraic notation"
+      />
+      <button
+        (click)="submitMove()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+      >
+        Submit
+      </button>
+    </div>
+    @if (errorMessage) {
+      <div class="error-message">{{ errorMessage }}</div>
+    }
+  </div>
+
+  <!-- Last 10 Moves -->
+  <div class="last-moves-section">
+    <h3>Last 10 Moves</h3>
+    <div class="move-history-compact">
+      @if (getLastTenMoves().length === 0) {
+        <p class="no-moves">No moves yet</p>
+      } @else {
+        <ol>
+          @for (move of getLastTenMoves(); track $index) {
+            <li>
+              <span class="move-number">{{ gameService.moveHistory().length - getLastTenMoves().length + $index + 1 }}
+                .</span> {{ move.notation || getMoveDescription(move) }}
+            </li>
+          }
+        </ol>
+      }
+    </div>
+  </div>
+
+  <!-- Captured Pieces -->
+  <div class="captured-pieces-section">
+    <h3>Captured Pieces</h3>
+    <div class="captured-white">
+      <strong>White:</strong>
+      @for (piece of getCapturedPiecesByColor('BLACK'); track $index) {
+        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
+      }
+    </div>
+    <div class="captured-black">
+      <strong>Black:</strong>
+      @for (piece of getCapturedPiecesByColor('WHITE'); track $index) {
+        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
+      }
+    </div>
+  </div>
+
+  <!-- New Game Button -->
+  <div class="controls-section">
+    <button (click)="resetGame()" class="reset-button">
+      New Game
+    </button>
+  </div>
+
+  <!-- Help Modal -->
+  <app-help-modal [show]="showHelp" (close)="toggleHelp()"></app-help-modal>
+</div>
+

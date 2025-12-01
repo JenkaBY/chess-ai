@@ -1,98 +1,43 @@
 <div class="game-info">
-  <div class="status-section">
-    <h3>Game Status</h3>
-    <div class="status-item">
-      <strong>Current Turn:</strong>
-      <span [class.white-turn]="gameService.currentTurn() === 'WHITE'"
-            [class.black-turn]="gameService.currentTurn() === 'BLACK'">
-        {{ gameService.currentTurn() }}
-      </span>
-    </div>
-
-    <ng-container *ngIf="gameService.isCheck()">
-      <div class="status-item alert">
-        <strong>⚠️ CHECK!</strong>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="gameService.isCheckmate()">
-      <div class="status-item alert">
-        <strong>♔ CHECKMATE!</strong>
-        <p>{{ getWinner() }} wins!</p>
-      </div>
-    </ng-container>
-
-    <ng-container *ngIf="gameService.isStalemate()">
-      <div class="status-item alert">
-        <strong>Draw by Stalemate</strong>
-      </div>
-    </ng-container>
-  </div>
-
-  <!-- <div class="fen-section">
-    <h3>FEN Notation</h3>
-    <div class="fen-display">
-      <code>{{ gameService.fenNotation() }}</code>
-    </div>
-  </div> -->
-
-  <div class="notation-input-section">
-    <div class="title-container">
-      <h3>Enter Move</h3>
-      <button
-        type="button"
-        class="help-btn"
-        aria-label="Show Help"
-        (click)="toggleHelp()"
-      >?
-      </button>
-    </div>
-    <div class="input-group">
-      <input
-        type="text"
-        [(ngModel)]="moveNotation"
-        placeholder="e.g., e4, Nf3, O-O"
-        (keydown.enter)="submitMove()"
-        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
-        aria-label="Enter chess move in algebraic notation"
-      />
-      <button
-        (click)="submitMove()"
-        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
-      >
-        Submit
-      </button>
-    </div>
-    <ng-container *ngIf="errorMessage">
-      <div class="error-message">{{ errorMessage }}</div>
-    </ng-container>
-  </div>
-
-  <app-move-history [moves]="gameService.moveHistory()"
-                    [getMoveDescription]="getMoveDescription"></app-move-history>
-
-  <div class="captured-pieces-section">
-    <h3>Captured Pieces</h3>
-    <div class="captured-white">
-      <strong>White:</strong>
-      <ng-container *ngFor="let piece of getCapturedPiecesByColor('BLACK')">
-        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
-      </ng-container>
-    </div>
-    <div class="captured-black">
-      <strong>Black:</strong>
-      <ng-container *ngFor="let piece of getCapturedPiecesByColor('WHITE')">
-        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
-      </ng-container>
-    </div>
-  </div>
-
-  <div class="controls-section">
-    <button (click)="resetGame()" class="reset-button">
-      New Game
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'game'"
+      (click)="setActiveTab('game')"
+    >
+      Game
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'history'"
+      (click)="setActiveTab('history')"
+    >
+      History
     </button>
   </div>
 
-  <!-- Help Modal -->
-  <app-help-modal [show]="showHelp()" (close)="toggleHelp()"></app-help-modal>
+  <!-- Tab Content -->
+  <div class="tab-content">
+    <!-- Game Tab -->
+    @if (activeTab() === 'game') {
+      <app-game-tab
+        [gameService]="gameService"
+        [moveNotation]="moveNotation"
+        [errorMessage]="errorMessage"
+        (moveNotationChange)="moveNotation = $event"
+        (errorMessageChange)="errorMessage = $event"
+        (submitMoveEvent)="submitMove()"
+        (resetGameEvent)="resetGame()"
+      ></app-game-tab>
+    }
+
+    <!-- History Tab -->
+    @if (activeTab() === 'history') {
+      <app-history-tab
+        [moves]="gameService.moveHistory()"
+        [getMoveDescription]="getMoveDescription"
+      ></app-history-tab>
+    }
+  </div>
 </div>

@@ -2,8 +2,8 @@ import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
-import {HelpModalComponent} from '../help-modal/help-modal.component';
-import {MoveHistoryComponent} from '../move-history/move-history.component';
+import {GameTabComponent} from '../game-tab/game-tab.component';
+import {HistoryTabComponent} from '../history-tab/history-tab.component';
 
 /**
  * Component for displaying game information and controls
@@ -11,7 +11,7 @@ import {MoveHistoryComponent} from '../move-history/move-history.component';
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, HelpModalComponent, MoveHistoryComponent],
+  imports: [CommonModule, FormsModule, GameTabComponent, HistoryTabComponent],
   templateUrl: './game-info.component.html',
   styleUrls: ['./game-info.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,13 +19,13 @@ import {MoveHistoryComponent} from '../move-history/move-history.component';
 export class GameInfoComponent {
   moveNotation = '';
   errorMessage = '';
-  showHelp = signal(false);
+  activeTab = signal<'game' | 'history'>('game');
 
   constructor(protected gameService: GameService) {
   }
 
-  toggleHelp(): void {
-    this.showHelp.set(!this.showHelp());
+  setActiveTab(tab: 'game' | 'history'): void {
+    this.activeTab.set(tab);
   }
 
   submitMove(): void {
@@ -50,38 +50,7 @@ export class GameInfoComponent {
     this.errorMessage = '';
   }
 
-  getWinner(): string {
-    const currentTurn = this.gameService.currentTurn();
-    return currentTurn === 'WHITE' ? 'Black' : 'White';
-  }
-
-  getCapturedPiecesByColor(color: string) {
-    return this.gameService.capturedPieces().filter(piece => piece.color === color);
-  }
-
-  getPieceSymbol(piece: any): string {
-    const symbols: any = {
-      'WHITE': {
-        'KING': '♔',
-        'QUEEN': '♕',
-        'ROOK': '♖',
-        'BISHOP': '♗',
-        'KNIGHT': '♘',
-        'PAWN': '♙'
-      },
-      'BLACK': {
-        'KING': '♚',
-        'QUEEN': '♛',
-        'ROOK': '♜',
-        'BISHOP': '♝',
-        'KNIGHT': '♞',
-        'PAWN': '♟'
-      }
-    };
-    return symbols[piece.color][piece.type];
-  }
-
-  getMoveDescription(move: any): string {
+  getMoveDescription = (move: any): string => {
     const from = String.fromCharCode('a'.charCodeAt(0) + move.from.col) + (8 - move.from.row);
     const to = String.fromCharCode('a'.charCodeAt(0) + move.to.col) + (8 - move.to.row);
     return `${from}-${to}`;

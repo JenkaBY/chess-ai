@@ -1,6 +1,7 @@
 .chess-board-container {
   position: relative;
   display: inline-block;
+  flex-shrink: 0; /* Prevent chessboard from shrinking */
   padding: 20px 30px;
   background: transparent;
   max-width: 100%;
