@@ -1,0 +1,22 @@
+<div
+  class="board-square"
+  [class.light]="isLight"
+  [class.dark]="!isLight"
+  [class.selected]="isSelected"
+  [class.valid-move]="isValidMove"
+  [class.highlighted]="isHighlighted"
+  (click)="onSquareClick()"
+  [attr.aria-label]="getAriaLabel()"
+  role="button"
+  tabindex="0"
+  (keydown.enter)="onSquareClick()"
+  (keydown.space)="onSquareClick()"
+>
+  <ng-container *ngIf="piece">
+    <app-chess-piece [piece]="piece"></app-chess-piece>
+  </ng-container>
+  <ng-container *ngIf="isValidMove">
+    <div class="valid-move-indicator"></div>
+  </ng-container>
+</div>
+

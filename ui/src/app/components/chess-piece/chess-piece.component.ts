@@ -12,27 +12,23 @@ import {CommonModule} from '@angular/common';
   selector: 'app-chess-piece',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <div class="chess-piece" [attr.aria-label]="getAriaLabel()">
-      {{ getPieceSymbol() }}
-    </div>
-  `,
-  styles: [`
-    .chess-piece {
-      font-size: 3rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      width: 100%;
-      height: 100%;
-    }
-  `],
+  templateUrl: './chess-piece.component.html',
+  styleUrls: ['./chess-piece.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ChessPieceComponent {
   @Input({required: true}) piece!: ChessPiece;
+
+  // Expose enum to template
+  readonly PieceColor = PieceColor;
+
+  get symbol(): string {
+    return this.getPieceSymbol();
+  }
+
+  get ariaLabel(): string {
+    return this.getAriaLabel();
+  }
 
   getPieceSymbol(): string {
     const symbols = {
@@ -61,6 +57,3 @@ export class ChessPieceComponent {
     return `${this.piece.color} ${this.piece.type}`;
   }
 }
-
-
-

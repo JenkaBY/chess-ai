@@ -1,0 +1,45 @@
+<div class="chess-board-container">
+  <div class="board-files board-files-top">
+    <ng-container *ngFor="let file of files">
+      <span>{{ file }}</span>
+    </ng-container>
+  </div>
+
+  <div class="board-main-row">
+    <div class="board-ranks board-ranks-left">
+      <ng-container *ngFor="let rank of ranks">
+        <span>{{ rank }}</span>
+      </ng-container>
+    </div>
+
+    <div class="chess-board" role="grid" aria-label="Chess board">
+      <ng-container *ngFor="let _ of boardRows; let rowIndex = index">
+        <div class="board-row" role="row">
+          <ng-container *ngFor="let _ of boardCols; let colIndex = index">
+            <app-board-square
+              [position]="{ row: rowIndex, col: colIndex }"
+              [piece]="getPieceAt(rowIndex, colIndex)"
+              [isLight]="isLightSquare(rowIndex, colIndex)"
+              [isSelected]="isSquareSelected(rowIndex, colIndex)"
+              [isValidMove]="isSquareValidMove(rowIndex, colIndex)"
+              [isHighlighted]="isSquareHighlighted(rowIndex, colIndex)"
+              (squareClicked)="onSquareClick($event)"
+            ></app-board-square>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="board-ranks board-ranks-right">
+      <ng-container *ngFor="let rank of ranks">
+        <span>{{ rank }}</span>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="board-files board-files-bottom">
+    <ng-container *ngFor="let file of files">
+      <span>{{ file }}</span>
+    </ng-container>
+  </div>
+</div>

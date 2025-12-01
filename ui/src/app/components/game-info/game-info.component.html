@@ -1,0 +1,102 @@
+<div class="game-info">
+  <h2>Chess Game</h2>
+
+  <div class="status-section">
+    <h3>Game Status</h3>
+    <div class="status-item">
+      <strong>Current Turn:</strong>
+      <span [class.white-turn]="gameService.currentTurn() === 'WHITE'"
+            [class.black-turn]="gameService.currentTurn() === 'BLACK'">
+        {{ gameService.currentTurn() }}
+      </span>
+    </div>
+
+    <ng-container *ngIf="gameService.isCheck()">
+      <div class="status-item alert">
+        <strong>⚠️ CHECK!</strong>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="gameService.isCheckmate()">
+      <div class="status-item alert">
+        <strong>♔ CHECKMATE!</strong>
+        <p>{{ getWinner() }} wins!</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="gameService.isStalemate()">
+      <div class="status-item alert">
+        <strong>Draw by Stalemate</strong>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="fen-section">
+    <h3>FEN Notation</h3>
+    <div class="fen-display">
+      <code>{{ gameService.fenNotation() }}</code>
+    </div>
+  </div>
+
+  <div class="notation-input-section">
+    <h3>Enter Move Notation</h3>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="moveNotation"
+        placeholder="e.g., e4, Nf3, O-O"
+        (keydown.enter)="submitMove()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+        aria-label="Enter chess move in algebraic notation"
+      />
+      <button
+        (click)="submitMove()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+      >
+        Submit Move
+      </button>
+    </div>
+    <ng-container *ngIf="errorMessage">
+      <div class="error-message">{{ errorMessage }}</div>
+    </ng-container>
+    <div class="notation-help">
+      <small>Examples: e4 (pawn), Nf3 (knight), Bxc4 (bishop captures), O-O (castle)</small>
+    </div>
+  </div>
+
+  <div class="move-history-section">
+    <h3>Move History</h3>
+    <div class="move-history">
+      <ng-container *ngIf="gameService.moveHistory().length === 0">
+        <p class="no-moves">No moves yet</p>
+      </ng-container>
+      <ng-container *ngIf="gameService.moveHistory().length > 0">
+        <ol>
+          <li *ngFor="let move of gameService.moveHistory()">{{ move.notation || getMoveDescription(move) }}</li>
+        </ol>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="captured-pieces-section">
+    <h3>Captured Pieces</h3>
+    <div class="captured-white">
+      <strong>White:</strong>
+      <ng-container *ngFor="let piece of getCapturedPiecesByColor('BLACK')">
+        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
+      </ng-container>
+    </div>
+    <div class="captured-black">
+      <strong>Black:</strong>
+      <ng-container *ngFor="let piece of getCapturedPiecesByColor('WHITE')">
+        <span class="captured-piece">{{ getPieceSymbol(piece) }}</span>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="controls-section">
+    <button (click)="resetGame()" class="reset-button">
+      New Game
+    </button>
+  </div>
+</div>

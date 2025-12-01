@@ -11,83 +11,8 @@ import {ChessPieceComponent} from '../chess-piece/chess-piece.component';
   selector: 'app-board-square',
   standalone: true,
   imports: [CommonModule, ChessPieceComponent],
-  template: `
-    <div
-      class="board-square"
-      [class.light]="isLight"
-      [class.dark]="!isLight"
-      [class.selected]="isSelected"
-      [class.valid-move]="isValidMove"
-      [class.highlighted]="isHighlighted"
-      (click)="onSquareClick()"
-      [attr.aria-label]="getAriaLabel()"
-      role="button"
-      tabindex="0"
-      (keydown.enter)="onSquareClick()"
-      (keydown.space)="onSquareClick()"
-    >
-      @if (piece) {
-        <app-chess-piece [piece]="piece"/>
-      }
-      @if (isValidMove) {
-        <div class="valid-move-indicator"></div>
-      }
-    </div>
-  `,
-  styles: [`
-    .board-square {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-
-    .board-square.light {
-      background-color: #f0d9b5;
-    }
-
-    .board-square.dark {
-      background-color: #b58863;
-    }
-
-    .board-square.selected {
-      background-color: #baca44 !important;
-      box-shadow: inset 0 0 0 3px #829769;
-    }
-
-    .board-square.valid-move {
-      cursor: pointer;
-    }
-
-    .board-square.highlighted {
-      background-color: #cdd26a !important;
-    }
-
-    .board-square:hover {
-      filter: brightness(0.95);
-    }
-
-    .valid-move-indicator {
-      position: absolute;
-      width: 30%;
-      height: 30%;
-      background-color: rgba(0, 0, 0, 0.3);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-
-    .board-square:has(app-chess-piece) .valid-move-indicator {
-      width: 100%;
-      height: 100%;
-      border-radius: 0;
-      background-color: transparent;
-      border: 4px solid rgba(0, 0, 0, 0.4);
-    }
-  `],
+  templateUrl: './board-square.component.html',
+  styleUrls: ['./board-square.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BoardSquareComponent {
@@ -115,4 +40,3 @@ export class BoardSquareComponent {
     return `${square}: empty`;
   }
 }
-
