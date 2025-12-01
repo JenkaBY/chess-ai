@@ -20,7 +20,7 @@ export class ChessPieceComponent {
   @Input({required: true}) piece!: ChessPiece;
 
   // Expose enum to template
-  readonly PieceColor = PieceColor;
+  public PieceColor = PieceColor;
 
   get symbol(): string {
     return this.getPieceSymbol();

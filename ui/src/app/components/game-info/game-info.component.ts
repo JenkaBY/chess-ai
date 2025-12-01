@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
+import {HelpModalComponent} from '../help-modal/help-modal.component';
 
 /**
  * Component for displaying game information and controls
@@ -9,7 +10,7 @@ import {GameService} from '../../services/game.service';
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HelpModalComponent],
   templateUrl: './game-info.component.html',
   styleUrls: ['./game-info.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,8 +18,13 @@ import {GameService} from '../../services/game.service';
 export class GameInfoComponent {
   moveNotation = '';
   errorMessage = '';
+  showHelp = signal(false);
 
   constructor(protected gameService: GameService) {
+  }
+
+  toggleHelp(): void {
+    this.showHelp.set(!this.showHelp());
   }
 
   submitMove(): void {

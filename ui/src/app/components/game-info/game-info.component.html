@@ -1,6 +1,4 @@
 <div class="game-info">
-  <h2>Chess Game</h2>
-
   <div class="status-section">
     <h3>Game Status</h3>
     <div class="status-item">
@@ -39,7 +37,16 @@
   </div> -->
 
   <div class="notation-input-section">
-    <h3>Enter Move Notation</h3>
+    <div class="title-container">
+      <h3>Enter Move</h3>
+      <button
+        type="button"
+        class="help-btn"
+        aria-label="Show Help"
+        (click)="toggleHelp()"
+      >?
+      </button>
+    </div>
     <div class="input-group">
       <input
         type="text"
@@ -53,15 +60,12 @@
         (click)="submitMove()"
         [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
       >
-        Submit Move
+        Submit
       </button>
     </div>
     <ng-container *ngIf="errorMessage">
       <div class="error-message">{{ errorMessage }}</div>
     </ng-container>
-    <div class="notation-help">
-      <small>Examples: e4 (pawn), Nf3 (knight), Bxc4 (bishop captures), O-O (castle)</small>
-    </div>
   </div>
 
   <div class="move-history-section">
@@ -99,4 +103,7 @@
       New Game
     </button>
   </div>
+
+  <!-- Help Modal -->
+  <app-help-modal [show]="showHelp()" (close)="toggleHelp()"></app-help-modal>
 </div>

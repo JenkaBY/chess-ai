@@ -1,0 +1,44 @@
+<ng-container *ngIf="show">
+  <div class="modal-overlay" (click)="onClose()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-body">
+        <section>
+          <h3>Algebraic Notation Guide</h3>
+          <p>Chess notation uses letters and numbers to describe moves:</p>
+          <ul>
+            <li><strong>Files (columns):</strong> a-h (left to right)</li>
+            <li><strong>Ranks (rows):</strong> 1-8 (bottom to top for White)</li>
+            <li><strong>Pieces:</strong> K=King, Q=Queen, R=Rook, B=Bishop, N=Knight (Pawns have no letter)</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Special Symbols</h3>
+          <ul>
+            <li><code>x</code> - Capture (e.g., Nxe5)</li>
+            <li><code>+</code> - Check (optional, auto-detected)</li>
+            <li><code>#</code> - Checkmate (optional, auto-detected)</li>
+            <li><code>=</code> - Promotion (e.g., e8=Q)</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Move Notation Examples</h3>
+          <p>
+            <code>e4</code> - Move pawn to e4,
+            <code>Nf3</code> - Move knight to f3,
+            <code>Bc4</code> - Move bishop to c4,
+            <code>Qd5</code> - Move queen to d5,
+            <code>Rad1</code> - Move rook from a-file to d1 (when disambiguation needed),
+            <code>exd5</code> - Pawn on e-file captures on d5,
+            <code>Nxe5</code> - Knight captures on e5,
+            <code>O-O</code> - Castle kingside (short castle),
+            <code>O-O-O</code> - Castle queenside (long castle),
+            <code>e8=Q</code> - Pawn promotion to queen
+          </p>
+        </section>
+      </div>
+      <div class="modal-footer">
+        <button class="close-button-footer" (click)="onClose(); $event.stopPropagation()">Close</button>
+      </div>
+    </div>
+  </div>
+</ng-container>
