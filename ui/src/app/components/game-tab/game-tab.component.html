@@ -48,18 +48,53 @@
         (ngModelChange)="onMoveNotationChange($event)"
         placeholder="e.g., e4, Nf3, O-O"
         (keydown.enter)="submitMove()"
-        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate() || aiGameService.isAiGameActive()"
         aria-label="Enter chess move in algebraic notation"
       />
       <button
         (click)="submitMove()"
-        [disabled]="gameService.isCheckmate() || gameService.isStalemate()"
+        [disabled]="gameService.isCheckmate() || gameService.isStalemate() || aiGameService.isAiGameActive()"
       >
         Submit
       </button>
     </div>
     @if (errorMessage) {
       <div class="error-message">{{ errorMessage }}</div>
+    }
+  </div>
+
+  <!-- AI Game Control Section -->
+  <div class="ai-game-section">
+    <h3>AI Game Control</h3>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="aiLapId"
+        placeholder="Enter Lap ID"
+        [disabled]="aiGameService.isAiGameActive()"
+        aria-label="Enter lap ID for AI game"
+      />
+      @if (!aiGameService.isAiGameActive()) {
+        <button
+          (click)="startAiGame()"
+          [disabled]="!aiLapId.trim()"
+          class="ai-start-button"
+        >
+          Start AI
+        </button>
+      } @else {
+        <button
+          (click)="stopAiGame()"
+          class="ai-stop-button"
+        >
+          Stop AI
+        </button>
+      }
+    </div>
+    @if (aiGameService.isAiGameActive()) {
+      <div class="ai-status">
+        <span class="ai-active-indicator">🤖 AI Active - Lap: {{ aiGameService.getCurrentLapId() }}</span>
+      </div>
     }
   </div>
 
@@ -109,4 +144,3 @@
   <!-- Help Modal -->
   <app-help-modal [show]="showHelp" (close)="toggleHelp()"></app-help-modal>
 </div>
-

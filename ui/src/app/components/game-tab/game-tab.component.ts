@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
 import {HelpModalComponent} from '../help-modal/help-modal.component';
+import {AiGameService} from '../../services/ai-game.service';
 
 @Component({
   selector: 'app-game-tab',
@@ -21,6 +22,10 @@ export class GameTabComponent {
   @Output() resetGameEvent = new EventEmitter<void>();
 
   showHelp = false;
+  aiLapId = '';
+
+  constructor(public aiGameService: AiGameService) {
+  }
 
   toggleHelp(): void {
     this.showHelp = !this.showHelp;
@@ -36,6 +41,16 @@ export class GameTabComponent {
 
   resetGame(): void {
     this.resetGameEvent.emit();
+  }
+
+  startAiGame(): void {
+    if (this.aiLapId.trim()) {
+      this.aiGameService.startAiGame(this.aiLapId.trim());
+    }
+  }
+
+  stopAiGame(): void {
+    this.aiGameService.stopAiGame();
   }
 
   getLastTenMoves(): any[] {

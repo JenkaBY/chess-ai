@@ -181,3 +181,40 @@ h3 {
   background-color: #da190b;
 }
 
+.ai-game-section {
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #E3F2FD;
+  border-radius: 4px;
+  border: 1px solid #2196F3;
+}
+
+.ai-start-button {
+  background-color: #2196F3 !important;
+}
+
+.ai-start-button:hover:not(:disabled) {
+  background-color: #1976D2 !important;
+}
+
+.ai-stop-button {
+  background-color: #f44336 !important;
+}
+
+.ai-stop-button:hover {
+  background-color: #da190b !important;
+}
+
+.ai-status {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: white;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.ai-active-indicator {
+  color: #2196F3;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
