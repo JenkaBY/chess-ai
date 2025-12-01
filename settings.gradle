@@ -1,2 +1,3 @@
 rootProject.name = 'chess-ai'
 include 'ui'
+include 'chess-ai-battle'

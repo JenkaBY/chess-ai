@@ -1,0 +1,25 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: chess-ai-battle
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/chess-ai-battle
+  ai:
+    openai:
+      api-key: ${SECRET_API_KEY}
+      chat:
+        options:
+          model: gpt-5-nano
+  #          temperature: 1
+
+logging:
+  level:
+    org.springframework.ai.chat.client.advisor: INFO
+
+app:
+  black-player:
+    model: gpt-5-mini
+  white-player:
+    model: gpt-5-nano
