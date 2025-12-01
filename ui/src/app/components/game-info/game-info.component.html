@@ -68,19 +68,8 @@
     </ng-container>
   </div>
 
-  <div class="move-history-section">
-    <h3>Move History</h3>
-    <div class="move-history">
-      <ng-container *ngIf="gameService.moveHistory().length === 0">
-        <p class="no-moves">No moves yet</p>
-      </ng-container>
-      <ng-container *ngIf="gameService.moveHistory().length > 0">
-        <ol>
-          <li *ngFor="let move of gameService.moveHistory()">{{ move.notation || getMoveDescription(move) }}</li>
-        </ol>
-      </ng-container>
-    </div>
-  </div>
+  <app-move-history [moves]="gameService.moveHistory()"
+                    [getMoveDescription]="getMoveDescription"></app-move-history>
 
   <div class="captured-pieces-section">
     <h3>Captured Pieces</h3>

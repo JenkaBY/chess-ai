@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
 import {HelpModalComponent} from '../help-modal/help-modal.component';
+import {MoveHistoryComponent} from '../move-history/move-history.component';
 
 /**
  * Component for displaying game information and controls
@@ -10,7 +11,7 @@ import {HelpModalComponent} from '../help-modal/help-modal.component';
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, HelpModalComponent],
+  imports: [CommonModule, FormsModule, HelpModalComponent, MoveHistoryComponent],
   templateUrl: './game-info.component.html',
   styleUrls: ['./game-info.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,0 +1,18 @@
+<div class="move-history-section">
+  <h3>Move History</h3>
+  <div class="move-history">
+    @if (moves.length === 0) {
+      <p class="no-moves">No moves yet</p>
+    }
+    @if (moves.length > 0) {
+      <ol>
+        @for (move of moves; track $index) {
+          <li>
+            <span class="move-number">{{ $index + 1 }}.</span> {{ move.notation || getMoveDescription(move) }}
+          </li>
+        }
+      </ol>
+    }
+  </div>
+</div>
+

@@ -1,0 +1,33 @@
+.move-history-section {
+  margin-bottom: 20px;
+}
+
+.move-history {
+  background-color: white;
+  padding: 10px;
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.move-history ol {
+  margin: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.move-history li {
+  margin: 4px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.no-moves {
+  color: #999;
+  font-style: italic;
+  margin: 0;
+}
+
+.move-number {
+  margin-right: 4px;
+}
+
