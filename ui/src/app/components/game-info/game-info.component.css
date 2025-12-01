@@ -4,6 +4,10 @@
   border-radius: 8px;
   min-width: 300px;
   max-width: 400px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-self: center;
 }
 
 h2 {

@@ -1,8 +1,10 @@
 .chess-board-container {
   position: relative;
   display: inline-block;
-  padding: 40px 60px;
+  padding: 20px 30px;
   background: transparent;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .board-main-row {
@@ -14,8 +16,10 @@
 .chess-board {
   display: grid;
   grid-template-rows: repeat(8, 1fr);
-  width: 600px;
-  height: 600px;
+  width: min(600px, 80vw);
+  height: min(600px, 80vw);
+  max-width: 600px;
+  max-height: 600px;
   border: 2px solid #333;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -30,7 +34,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 600px;
+  width: min(600px, 80vw);
+  max-width: 600px;
   margin: 0 auto;
   font-weight: bold;
   color: #333;
@@ -58,7 +63,8 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 600px;
+  height: min(600px, 80vw);
+  max-height: 600px;
   font-weight: bold;
   color: #333;
   font-size: 1.2rem;

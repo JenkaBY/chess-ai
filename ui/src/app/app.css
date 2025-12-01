@@ -22,11 +22,12 @@ header h1 {
 main.game-container {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 40px;
-  padding: 40px 20px;
-  flex-wrap: wrap;
+  padding: 0 40px 0 40px;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 footer {
