@@ -1,8 +1,9 @@
-import {ChangeDetectionStrategy, Component, signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, effect, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {BoardSquareComponent} from '../board-square/board-square.component';
 import {GameService} from '../../services/game.service';
 import {BoardPosition} from '../../models/board-position';
+import {ChessMove} from '../../models/chess-move';
 
 /**
  * Main chess board component
@@ -177,6 +178,15 @@ export class ChessBoardComponent {
   private lastMove = signal<{ from: BoardPosition; to: BoardPosition } | null>(null);
 
   constructor(protected gameService: GameService) {
+    effect(() => {
+      const history = this.gameService.moveHistory();
+      if (!history.length) {
+        this.lastMove.set(null);
+        return;
+      }
+      const latest: ChessMove = history[history.length - 1];
+      this.lastMove.set({from: latest.from, to: latest.to});
+    });
   }
 
   getPieceAt(row: number, col: number) {
@@ -214,7 +224,6 @@ export class ChessBoardComponent {
       const moveSuccess = this.gameService.makeMove(selected, position);
 
       if (moveSuccess) {
-        this.lastMove.set({from: selected, to: position});
         this.selectedSquare.set(null);
         this.validMoves.set([]);
       } else {
@@ -242,4 +251,3 @@ export class ChessBoardComponent {
     this.validMoves.set(this.gameService.getValidMoves(position));
   }
 }
-
