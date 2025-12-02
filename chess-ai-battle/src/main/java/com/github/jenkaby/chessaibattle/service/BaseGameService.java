@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -39,10 +38,10 @@ public class BaseGameService implements GameService {
 
         while (lap.status() == GameStatus.START) {
 //             TODO define first player move
-            var currentCount = moveCounters.compute(lapId, (key, value) -> value == null ? 1 : value + 1);
-            log.info("Current move count for lapId {} : {}", lapId, currentCount);
+            var currentTurn = moveCounters.compute(lapId, (key, value) -> value == null ? 1 : value + 1);
+            log.info("Current move count for lapId {} : {}", lapId, currentTurn);
 //            white player move
-            var whiteMove = makeMove(lapId, whitePlayer, emitter);
+            var whiteMove = makeMove(lapId, whitePlayer, emitter, currentTurn);
             if (whiteMove.isMate()) {
                 lap = lap.toBuilder()
                         .updatedAt(Instant.now())
@@ -62,7 +61,7 @@ public class BaseGameService implements GameService {
             }
 
 //            black player move
-            var blackMove = makeMove(lapId, blackPlayer, emitter);
+            var blackMove = makeMove(lapId, blackPlayer, emitter, currentTurn);
             if (blackMove.isMate()) {
                 lap = lap.toBuilder()
                         .updatedAt(Instant.now())
@@ -107,11 +106,11 @@ public class BaseGameService implements GameService {
         return lapRepository.save(lap);
     }
 
-    private AiChessMovement makeMove(String lapId, PlayerService player, SseEmitter emitter) throws IOException {
+    private AiChessMovement makeMove(String lapId, PlayerService player, SseEmitter emitter, Integer id) throws IOException {
         var movement = player.move(lapId);
         try {
             SseEmitter.SseEventBuilder event = SseEmitter.event()
-                    .id(UUID.randomUUID().toString())
+                    .id(String.valueOf(id))
                     .data(Map.of(
                             "movement", movement.notation(),
                             "player", player.getPlayer(),
