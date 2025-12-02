@@ -18,7 +18,11 @@ import java.util.List;
 public class BoardService {
 
     public Board getCurrentBoard(List<Movement> movements) {
-        Board board = new Board();
+        return this.getCurrentBoard(null, movements);
+    }
+
+    public Board getCurrentBoard(Board actualBoard, List<Movement> movements) {
+        Board board = actualBoard == null ? new Board() : actualBoard;
 
         for (int i = 0; i < movements.size(); i++) {
             Movement movement = movements.get(i);
@@ -97,7 +101,7 @@ public class BoardService {
      * Parse castling moves
      */
     private ChessMovement parseCastling(Board board, Color color, boolean kingSide,
-                                         boolean isCheck, boolean isCheckmate) {
+                                        boolean isCheck, boolean isCheckmate) {
         int row = color == Color.WHITE ? 7 : 0;
         Position kingFrom = new Position(row, 4);
         Position kingTo = new Position(row, kingSide ? 6 : 2);

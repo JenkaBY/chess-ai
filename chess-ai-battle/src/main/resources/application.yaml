@@ -17,6 +17,7 @@ spring:
 logging:
   level:
     org.springframework.ai.chat.client.advisor: INFO
+    com.github.jenkaby.chessaibattle.config.advisor: info
 
 app:
   black-player:

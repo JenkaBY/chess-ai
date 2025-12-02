@@ -118,7 +118,7 @@ public class BaseGameService implements GameService {
                             "reason", movement.reason()))
                     .name("move");
             emitter.send(event);
-            log.info("Sent SSE event for lapId {}: player={}, movement={}", lapId, player.getPlayer(), movement.notation());
+            log.debug("Sent SSE event for lapId {}: player={}, movement={}", lapId, player.getPlayer(), movement.notation());
         } catch (IOException e) {
             log.error("Failed to send SSE event for lapId {}: {}", lapId, e.getMessage());
             throw e;
