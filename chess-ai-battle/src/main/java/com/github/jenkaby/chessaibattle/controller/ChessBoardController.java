@@ -1,9 +1,9 @@
 package com.github.jenkaby.chessaibattle.controller;
 
 
+import com.github.jenkaby.chessaibattle.chess.BoardService;
 import com.github.jenkaby.chessaibattle.persistence.entity.Movement;
 import com.github.jenkaby.chessaibattle.persistence.repository.MovementRepository;
-import com.github.jenkaby.chessaibattle.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

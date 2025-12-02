@@ -1,4 +1,4 @@
-package com.github.jenkaby.chessaibattle.model;
+package com.github.jenkaby.chessaibattle.chess;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class ParsedMovement {
     private final Position from;
     private final Position to;
     private final PieceType pieceType;
-    private final Player player;
+    private final Color color;
     private final boolean isCapture;
     private final boolean isCastling;
     private final PieceType promotionType;
@@ -20,13 +20,13 @@ public class ParsedMovement {
     private final boolean isCheckmate;
 
     public ParsedMovement(String algebraicNotation, Position from, Position to, PieceType pieceType,
-                          Player player, boolean isCapture, boolean isCastling, PieceType promotionType,
+                          Color color, boolean isCapture, boolean isCastling, PieceType promotionType,
                           boolean isCheck, boolean isCheckmate) {
         this.algebraicNotation = algebraicNotation;
         this.from = from;
         this.to = to;
         this.pieceType = pieceType;
-        this.player = player;
+        this.color = color;
         this.isCapture = isCapture;
         this.isCastling = isCastling;
         this.promotionType = promotionType;

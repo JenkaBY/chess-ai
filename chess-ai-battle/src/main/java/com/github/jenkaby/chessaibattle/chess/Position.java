@@ -1,4 +1,4 @@
-package com.github.jenkaby.chessaibattle.model;
+package com.github.jenkaby.chessaibattle.chess;
 
 import lombok.Data;
 

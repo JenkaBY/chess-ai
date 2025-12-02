@@ -1,5 +1,6 @@
-package com.github.jenkaby.chessaibattle.model;
+package com.github.jenkaby.chessaibattle.chess;
 
+import com.github.jenkaby.chessaibattle.model.Player;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

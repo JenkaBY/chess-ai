@@ -1,4 +1,6 @@
-package com.github.jenkaby.chessaibattle.model;
+package com.github.jenkaby.chessaibattle.chess;
+
+import com.github.jenkaby.chessaibattle.model.Player;
 
 /**
  * Represents a chess board with pieces and provides visualization
