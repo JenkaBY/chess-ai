@@ -3,12 +3,14 @@
   background-color: #f5f5f5;
   border-radius: 8px;
   flex: 1 1 auto; /* Grow to take remaining space, shrink if needed, auto basis */
-  min-width: 350px; /* Minimum width to ensure usability */
+  min-width: 500px; /* Increased minimum width for more space */
+  max-width: 100%; /* Prevent exceeding container width */
   height: calc(8 * 64px + 80px); /* Match chessboard height (8 squares * 64px + labels/padding) */
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: hidden; /* Prevent any overflow */
   align-self: flex-start;
+  box-sizing: border-box; /* Include padding and border in width calculation */
 }
 
 /* Tab Navigation */
@@ -46,7 +48,9 @@
 .tab-content {
   flex: 1;
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: hidden; /* Hide horizontal scrollbar */
   padding: 20px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  max-width: 100%; /* Prevent exceeding parent width */
 }
 

@@ -1,0 +1,33 @@
+<div class="laps-container">
+  <div class="laps-header">
+    <h3>Latest 10 Games</h3>
+    <button class="refresh-button" (click)="refresh()" [disabled]="loading()">
+      {{ loading() ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  @if (loading() && laps().length === 0) {
+    <div class="loading-message">Loading laps...</div>
+  }
+
+  @if (error()) {
+    <div class="error-message">{{ error() }}</div>
+  }
+
+  @if (laps().length > 0) {
+    <div class="laps-list">
+      @for (lap of laps(); track lap.lapId) {
+        <div
+          class="lap-item"
+          [title]="getFormattedLapData(lap)"
+        >
+          <div class="lap-summary">{{ getLapSummary(lap) }}</div>
+          <div class="lap-date">{{ lap.updatedAt | date:'short' }}</div>
+        </div>
+      }
+    </div>
+  } @else if (!loading() && !error()) {
+    <div class="no-laps-message">No laps found</div>
+  }
+</div>
+

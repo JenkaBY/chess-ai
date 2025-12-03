@@ -15,6 +15,13 @@
     >
       History
     </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab() === 'laps'"
+      (click)="setActiveTab('laps')"
+    >
+      Laps
+    </button>
   </div>
 
   <!-- Tab Content -->
@@ -38,6 +45,11 @@
         [moves]="gameService.moveHistory()"
         [getMoveDescription]="getMoveDescription"
       ></app-history-tab>
+    }
+
+    <!-- Laps Tab -->
+    @if (activeTab() === 'laps') {
+      <app-laps-tab></app-laps-tab>
     }
   </div>
 </div>

@@ -1,0 +1,119 @@
+.laps-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 10px;
+}
+
+.laps-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #333;
+}
+
+.laps-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.refresh-button {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.refresh-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.refresh-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.laps-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lap-item {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.lap-item:hover {
+  background-color: #e8f4f8;
+  border-color: #2196F3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateX(2px);
+}
+
+.lap-summary {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.lap-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.loading-message,
+.error-message,
+.no-laps-message {
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.loading-message {
+  color: #666;
+}
+
+.error-message {
+  color: #f44336;
+  background-color: #ffebee;
+  border-radius: 4px;
+}
+
+.no-laps-message {
+  color: #999;
+}
+
+/* Custom scrollbar for laps list */
+.laps-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.laps-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.laps-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.laps-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

@@ -27,7 +27,8 @@ main.game-container {
   gap: 40px;
   padding: 0 40px 0 40px;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-y: hidden; /* Prevent vertical scroll on main container */
 }
 
 footer {

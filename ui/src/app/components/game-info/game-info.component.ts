@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
 import {GameTabComponent} from '../game-tab/game-tab.component';
 import {HistoryTabComponent} from '../history-tab/history-tab.component';
+import {LapsTabComponent} from '../laps-tab/laps-tab.component';
 
 /**
  * Component for displaying game information and controls
@@ -11,7 +12,7 @@ import {HistoryTabComponent} from '../history-tab/history-tab.component';
 @Component({
   selector: 'app-game-info',
   standalone: true,
-  imports: [CommonModule, FormsModule, GameTabComponent, HistoryTabComponent],
+  imports: [CommonModule, FormsModule, GameTabComponent, HistoryTabComponent, LapsTabComponent],
   templateUrl: './game-info.component.html',
   styleUrls: ['./game-info.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,12 +20,12 @@ import {HistoryTabComponent} from '../history-tab/history-tab.component';
 export class GameInfoComponent {
   moveNotation = '';
   errorMessage = '';
-  activeTab = signal<'game' | 'history'>('game');
+  activeTab = signal<'game' | 'history' | 'laps'>('game');
 
   constructor(protected gameService: GameService) {
   }
 
-  setActiveTab(tab: 'game' | 'history'): void {
+  setActiveTab(tab: 'game' | 'history' | 'laps'): void {
     this.activeTab.set(tab);
   }
 
