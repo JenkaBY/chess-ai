@@ -139,14 +139,15 @@ export class SseService {
         console.log('🏁 Replay complete event received - total moves:', moveCount);
         this.zone.run(() => {
           console.log('🏁 Completing observer and closing connection');
-          observer.complete();
-          eventSource.close();
+          eventSource.close(); // Close first to prevent error event
+          observer.complete(); // Then complete the observer
         });
       });
 
       eventSource.onerror = (error) => {
+        // Silently ignore errors if replay already completed successfully
         if (isCompleted) {
-          console.log('ℹ️ Error event after completion (expected), ignoring');
+          console.log('ℹ️ Error event after completion (expected when server closes connection), ignoring');
           return;
         }
 
@@ -161,23 +162,23 @@ export class SseService {
             if (moveCount === 0 && !isConnected) {
               console.error('❌ Connection failed - server may be unreachable or endpoint invalid');
               isCompleted = true;
-              observer.error(new Error('Failed to connect to replay endpoint'));
               eventSource.close();
+              observer.error(new Error('Failed to connect to replay endpoint'));
             } else {
               // Connection was closed after receiving some moves (likely normal completion)
               console.log('ℹ️ Connection closed after receiving', moveCount, 'moves - treating as normal completion');
               if (!isCompleted) {
                 isCompleted = true;
+                eventSource.close();
                 observer.complete();
               }
-              eventSource.close();
             }
           } else if (eventSource.readyState === EventSource.CONNECTING) {
             // EventSource is trying to reconnect, prevent this for replay
             console.log('⛔ Preventing auto-reconnection for replay');
             isCompleted = true;
-            observer.error(new Error('Connection lost during replay'));
             eventSource.close();
+            observer.error(new Error('Connection lost during replay'));
           }
         });
       };

@@ -40,7 +40,7 @@ public class ReplayChessGameService {
                         .build())
                 .name("move");
         emitter.send(event);
-        log.debug("Sent SSE event for lapId {}: player={}, movement={}", movement.lapId(), movement.player(), movement.notation());
+        log.debug("Sent SSE event {} for lapId {}: player={}, movement={}", id, movement.lapId(), movement.player(), movement.notation());
         Thread.sleep(delayMs);
     }
 }
