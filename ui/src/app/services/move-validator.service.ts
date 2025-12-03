@@ -301,7 +301,46 @@ export class KingMoveValidator extends BaseMoveValidator {
       }
     }
 
-    // TODO: Add castling logic
+    // Add castling logic
+    if (!piece.hasMoved) {
+      // Kingside castling (O-O)
+      const kingsideRook = board[piece.position.row][7];
+      if (kingsideRook?.type === PieceType.ROOK &&
+        kingsideRook.color === piece.color &&
+        !kingsideRook.hasMoved) {
+        // Check if squares between king and rook are empty
+        const squaresBetween = [
+          {row: piece.position.row, col: 5},
+          {row: piece.position.row, col: 6}
+        ];
+        const pathClear = squaresBetween.every(pos => board[pos.row][pos.col] === null);
+
+        if (pathClear) {
+          // King moves to g-file (column 6)
+          moves.push({row: piece.position.row, col: 6});
+        }
+      }
+
+      // Queenside castling (O-O-O)
+      const queensideRook = board[piece.position.row][0];
+      if (queensideRook?.type === PieceType.ROOK &&
+        queensideRook.color === piece.color &&
+        !queensideRook.hasMoved) {
+        // Check if squares between king and rook are empty
+        const squaresBetween = [
+          {row: piece.position.row, col: 1},
+          {row: piece.position.row, col: 2},
+          {row: piece.position.row, col: 3}
+        ];
+        const pathClear = squaresBetween.every(pos => board[pos.row][pos.col] === null);
+
+        if (pathClear) {
+          // King moves to c-file (column 2)
+          moves.push({row: piece.position.row, col: 2});
+        }
+      }
+    }
+
     return moves;
   }
 }

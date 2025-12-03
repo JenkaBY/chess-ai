@@ -183,26 +183,49 @@ export class GameService {
       capturedPiece: capturedPiece || undefined
     };
 
-    // Check for en passant capture
-    if (
-      piece.type === PieceType.PAWN &&
-      state.enPassantTarget &&
-      BoardPositionUtil.equals(to, state.enPassantTarget)
-    ) {
-      const captureRow = piece.color === PieceColor.WHITE ? to.row + 1 : to.row - 1;
-      move.capturedPiece = newBoard[captureRow][to.col]!;
-      move.isEnPassant = true;
-      newBoard[captureRow][to.col] = null;
-    }
+    // Check for castling
+    if (piece.type === PieceType.KING && !piece.hasMoved && Math.abs(to.col - from.col) === 2) {
+      move.isCastling = true;
+      const isKingside = to.col > from.col;
 
-    // Move the piece
-    newBoard[to.row][to.col] = {...piece, position: to, hasMoved: true};
-    newBoard[from.row][from.col] = null;
+      // Move the king
+      newBoard[to.row][to.col] = {...piece, position: to, hasMoved: true};
+      newBoard[from.row][from.col] = null;
 
-    // Handle pawn promotion (auto-promote to queen for now)
-    if (piece.type === PieceType.PAWN && (to.row === 0 || to.row === 7)) {
-      newBoard[to.row][to.col]!.type = PieceType.QUEEN;
-      move.promotionType = PieceType.QUEEN;
+      // Move the rook
+      if (isKingside) {
+        // Kingside castling: rook from h-file to f-file
+        const rook = newBoard[from.row][7]!;
+        newBoard[from.row][5] = {...rook, position: {row: from.row, col: 5}, hasMoved: true};
+        newBoard[from.row][7] = null;
+      } else {
+        // Queenside castling: rook from a-file to d-file
+        const rook = newBoard[from.row][0]!;
+        newBoard[from.row][3] = {...rook, position: {row: from.row, col: 3}, hasMoved: true};
+        newBoard[from.row][0] = null;
+      }
+    } else {
+      // Check for en passant capture
+      if (
+        piece.type === PieceType.PAWN &&
+        state.enPassantTarget &&
+        BoardPositionUtil.equals(to, state.enPassantTarget)
+      ) {
+        const captureRow = piece.color === PieceColor.WHITE ? to.row + 1 : to.row - 1;
+        move.capturedPiece = newBoard[captureRow][to.col]!;
+        move.isEnPassant = true;
+        newBoard[captureRow][to.col] = null;
+      }
+
+      // Move the piece
+      newBoard[to.row][to.col] = {...piece, position: to, hasMoved: true};
+      newBoard[from.row][from.col] = null;
+
+      // Handle pawn promotion (auto-promote to queen for now)
+      if (piece.type === PieceType.PAWN && (to.row === 0 || to.row === 7)) {
+        newBoard[to.row][to.col]!.type = PieceType.QUEEN;
+        move.promotionType = PieceType.QUEEN;
+      }
     }
 
     // Set en passant target for next turn
