@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, signal} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {LapService} from '../../services/lap.service';
 import {LapDto} from '../../models/lap.model';
@@ -17,6 +17,8 @@ export class LapsTabComponent implements OnInit {
   laps = signal<LapDto[]>([]);
   loading = signal<boolean>(false);
   error = signal<string>('');
+
+  @Output() replayRequested = new EventEmitter<string>();
 
   constructor(private lapService: LapService) {
   }
@@ -65,6 +67,11 @@ export class LapsTabComponent implements OnInit {
 
   refresh(): void {
     this.loadLaps();
+  }
+
+  replayLap(lapId: string): void {
+    console.log('🎬 LapsTabComponent.replayLap() - emitting replay request for lapId:', lapId);
+    this.replayRequested.emit(lapId);
   }
 }
 

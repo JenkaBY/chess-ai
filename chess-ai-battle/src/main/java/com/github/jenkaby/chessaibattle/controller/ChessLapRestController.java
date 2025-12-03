@@ -71,7 +71,7 @@ public class ChessLapRestController {
 
     @GetMapping(path = "/{lapId}/replay", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter replayGame(@PathVariable("lapId") String lapId, @RequestParam int speedMs) {
-        log.info("Requesting replay for lap {}", lapId);
+        log.info("Requesting replay for lap {}, speed {}", lapId, speedMs);
 
         var emitter = new SseEmitter(0L); // No timeout
 

@@ -21,8 +21,19 @@
           class="lap-item"
           [title]="getFormattedLapData(lap)"
         >
-          <div class="lap-summary">{{ getLapSummary(lap) }}</div>
-          <div class="lap-date">{{ lap.updatedAt | date:'short' }}</div>
+          <div class="lap-content">
+            <div class="lap-info">
+              <div class="lap-summary">{{ getLapSummary(lap) }}</div>
+              <div class="lap-date">{{ lap.updatedAt | date:'short' }}</div>
+            </div>
+            <button
+              class="replay-button"
+              (click)="replayLap(lap.lapId)"
+              title="Replay this game"
+            >
+              ▶ Replay
+            </button>
+          </div>
         </div>
       }
     </div>

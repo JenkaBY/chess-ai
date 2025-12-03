@@ -49,7 +49,7 @@
 
     <!-- Laps Tab -->
     @if (activeTab() === 'laps') {
-      <app-laps-tab></app-laps-tab>
+      <app-laps-tab (replayRequested)="handleReplayRequest($event)"></app-laps-tab>
     }
   </div>
 </div>

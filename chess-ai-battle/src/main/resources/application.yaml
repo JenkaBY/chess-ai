@@ -18,6 +18,7 @@ logging:
   level:
     org.springframework.ai.chat.client.advisor: INFO
     com.github.jenkaby.chessaibattle.config.advisor: info
+    com.github.jenkaby.chessaibattle.service.ReplayChessGameService: DEBUG
 
 app:
   black-player:
