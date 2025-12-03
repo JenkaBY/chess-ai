@@ -218,8 +218,97 @@ public class BoardService {
         int absRowDiff = Math.abs(rowDiff);
         int absColDiff = Math.abs(colDiff);
 
-        return switch (piece.getType()) {
+        boolean basicMoveValid = switch (piece.getType()) {
             case PAWN -> canPawnMove(board, piece, from, to, rowDiff, colDiff);
+            case KNIGHT -> (absRowDiff == 2 && absColDiff == 1) || (absRowDiff == 1 && absColDiff == 2);
+            case BISHOP -> absRowDiff == absColDiff && absRowDiff > 0 && isPathClear(board, from, to);
+            case ROOK -> (rowDiff == 0 || colDiff == 0) && isPathClear(board, from, to);
+            case QUEEN -> ((absRowDiff == absColDiff) || (rowDiff == 0 || colDiff == 0)) &&
+                    isPathClear(board, from, to);
+            case KING -> absRowDiff <= 1 && absColDiff <= 1;
+        };
+
+        if (!basicMoveValid) {
+            return false;
+        }
+
+        // Check if this move would leave own king in check (pinned piece validation)
+        return !wouldLeaveKingInCheck(board, piece, from, to);
+    }
+
+    /**
+     * Check if making this move would leave the player's king in check
+     * This handles pinned pieces and prevents illegal moves
+     */
+    private boolean wouldLeaveKingInCheck(Board board, Piece piece, Position from, Position to) {
+        // Create a copy of the board with the move applied
+        Board tempBoard = board.copy();
+
+        // Apply the move temporarily
+        Piece tempPiece = tempBoard.getPiece(from);
+        tempBoard.removePiece(from);
+        tempBoard.setPiece(to, tempPiece);
+
+        // Check if king is in check after this move
+        return isKingInCheck(tempBoard, piece.getOwner());
+    }
+
+    /**
+     * Check if the king of the given player is in check
+     */
+    private boolean isKingInCheck(Board board, Player player) {
+        // Find the king's position
+        Position kingPos = null;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Position pos = new Position(row, col);
+                Piece piece = board.getPiece(pos);
+                if (piece != null && piece.getType() == PieceType.KING && piece.getOwner() == player) {
+                    kingPos = pos;
+                    break;
+                }
+            }
+            if (kingPos != null) break;
+        }
+
+        if (kingPos == null) {
+            return false; // No king found (shouldn't happen in valid game)
+        }
+
+        // Check if any enemy piece can attack the king
+        Player enemy = player == Player.WHITE ? Player.BLACK : Player.WHITE;
+        for (int row = 0; row < 8; row++) {
+            for (int col = 0; col < 8; col++) {
+                Position pos = new Position(row, col);
+                Piece piece = board.getPiece(pos);
+                if (piece != null && piece.getOwner() == enemy) {
+                    // Check if this enemy piece can attack the king
+                    if (canPieceAttack(board, piece, pos, kingPos)) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if a piece can attack a position (without checking for check)
+     * This is similar to canPieceMoveTo but doesn't recursively check for check
+     */
+    private boolean canPieceAttack(Board board, Piece piece, Position from, Position to) {
+        int rowDiff = to.getRow() - from.getRow();
+        int colDiff = to.getCol() - from.getCol();
+        int absRowDiff = Math.abs(rowDiff);
+        int absColDiff = Math.abs(colDiff);
+
+        return switch (piece.getType()) {
+            case PAWN -> {
+                int direction = piece.getOwner() == Player.WHITE ? -1 : 1;
+                // Pawn can attack diagonally
+                yield Math.abs(colDiff) == 1 && rowDiff == direction;
+            }
             case KNIGHT -> (absRowDiff == 2 && absColDiff == 1) || (absRowDiff == 1 && absColDiff == 2);
             case BISHOP -> absRowDiff == absColDiff && absRowDiff > 0 && isPathClear(board, from, to);
             case ROOK -> (rowDiff == 0 || colDiff == 0) && isPathClear(board, from, to);

@@ -169,7 +169,21 @@ export class GameService {
       }
     }
 
-    // Move failed - print debug information
+    // Move failed - print detailed debug information
+    console.log(`🔍 Found ${candidatePieces.length} candidate piece(s) but none can make the move`);
+    candidatePieces.forEach((candidate, index) => {
+      const validMoves = this.getValidMoves(candidate.position);
+      const fromPos = this.positionToAlgebraic(candidate.position);
+      const toPos = parsedMove.toSquare;
+      console.log(`  Candidate ${index + 1}: ${PieceType[candidate.piece.type]} at ${fromPos}`);
+      console.log(`    Valid moves:`, validMoves.length > 0 ? validMoves.map(m => this.positionToAlgebraic(m)).join(', ') : 'NONE');
+      console.log(`    Can reach ${toPos}?`, validMoves.some(move => BoardPositionUtil.equals(move, toPosition)) ? 'YES' : 'NO');
+
+      // Check if move would put king in check
+      const wouldBeCheck = this.wouldBeInCheck(candidate.piece, candidate.position, toPosition, state);
+      console.log(`    Would leave king in check?`, wouldBeCheck ? 'YES (filtered out)' : 'NO');
+    });
+
     this.debugService.printBoardState(
       state.board,
       `Failed to execute move: ${notation}`,
@@ -189,6 +203,15 @@ export class GameService {
       success: false,
       errorMessage: `No valid piece found to make the move '${notation}'`
     };
+  }
+
+  /**
+   * Convert position to algebraic notation (helper for debugging)
+   */
+  private positionToAlgebraic(pos: BoardPosition): string {
+    const file = String.fromCharCode('a'.charCodeAt(0) + pos.col);
+    const rank = (8 - pos.row).toString();
+    return file + rank;
   }
 
   /**
