@@ -72,6 +72,8 @@ export class AiGameService {
     } else {
       console.error(`Failed to make move: ${event.movement} by reason: ${moveResult.errorMessage}`);
       this.toastService.show(`Invalid move: ${event.movement}. Reason ${moveResult.errorMessage}`, 'error');
+
+      this.stopAiGame();
     }
   }
 

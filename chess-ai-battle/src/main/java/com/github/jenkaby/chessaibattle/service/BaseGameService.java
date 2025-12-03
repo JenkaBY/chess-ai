@@ -113,6 +113,7 @@ public class BaseGameService implements GameService {
                     .id(String.valueOf(id))
                     .data(Map.of(
                             "turn", id,
+                            "lapId", lapId,
                             "movement", movement.notation(),
                             "player", player.getPlayer(),
                             "reason", movement.reason()))
