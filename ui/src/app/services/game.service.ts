@@ -10,6 +10,7 @@ import {MoveValidatorService} from './move-validator.service';
 import {NotationService} from './notation.service';
 import {FenService} from './fen.service';
 import {ChessMoveResult} from '../models/chess-move-response';
+import {DebugService} from './debug.service';
 
 /**
  * Main game service that manages the chess game state
@@ -35,7 +36,8 @@ export class GameService {
     private boardInitializer: BoardInitializerService,
     private moveValidator: MoveValidatorService,
     private notationService: NotationService,
-    private fenService: FenService
+    private fenService: FenService,
+    private debugService: DebugService
   ) {
     this.gameStateSignal = signal<GameState>(this.boardInitializer.initializeGameState());
   }
@@ -137,6 +139,28 @@ export class GameService {
       }
     }
 
+    // If no candidates found, print debug info
+    if (candidatePieces.length === 0) {
+      this.debugService.printBoardState(
+        state.board,
+        `No candidate pieces found for move: ${notation}`,
+        {
+          attemptedMove: {
+            from: {row: -1, col: -1},
+            to: toPosition,
+            notation
+          },
+          currentTurn: state.currentTurn,
+          enPassantTarget: state.enPassantTarget
+        }
+      );
+
+      return {
+        success: false,
+        errorMessage: `No ${PieceType[parsedMove.pieceType]} found to make the move '${notation}'`
+      };
+    }
+
     // Try each candidate piece
     for (const candidate of candidatePieces) {
       const validMoves = this.getValidMoves(candidate.position);
@@ -144,6 +168,22 @@ export class GameService {
         return this.makeMove(candidate.position, toPosition);
       }
     }
+
+    // Move failed - print debug information
+    this.debugService.printBoardState(
+      state.board,
+      `Failed to execute move: ${notation}`,
+      {
+        attemptedMove: {
+          from: candidatePieces[0]?.position || {row: -1, col: -1},
+          to: toPosition,
+          notation
+        },
+        currentTurn: state.currentTurn,
+        enPassantTarget: state.enPassantTarget,
+        validMoves: candidatePieces[0] ? this.getValidMoves(candidatePieces[0].position) : []
+      }
+    );
 
     return {
       success: false,
