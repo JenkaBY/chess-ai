@@ -42,7 +42,7 @@ public class AiConfig {
 
 
     @Bean
-    PromptTemplate promptTemplate() {
+    public PromptTemplate promptTemplate() {
         return PromptTemplate.builder()
                 .template("""
                         You are chess gross-master playing as {{color}} in a chess game. Your goal is win the game by making the best possible moves.

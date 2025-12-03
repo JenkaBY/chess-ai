@@ -21,6 +21,6 @@ logging:
 
 app:
   black-player:
-    model: gpt-5-mini
+    model: gpt-5-nano
   white-player:
     model: gpt-5-nano

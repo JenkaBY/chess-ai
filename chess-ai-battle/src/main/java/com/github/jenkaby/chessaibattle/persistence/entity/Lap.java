@@ -16,6 +16,9 @@ public record Lap(
         String id,
         String lapId,
 
+        PlayerSettings whitePlayerSettings,
+        PlayerSettings blackPlayerSettings,
+
         @Field
         GameStatus status,
 

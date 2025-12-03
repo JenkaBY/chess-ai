@@ -1,13 +1,17 @@
 package com.github.jenkaby.chessaibattle.service;
 
 import com.github.jenkaby.chessaibattle.model.AiChessMovement;
+import com.github.jenkaby.chessaibattle.model.ChessMovementEvent;
 import com.github.jenkaby.chessaibattle.model.GameStatus;
 import com.github.jenkaby.chessaibattle.model.Player;
 import com.github.jenkaby.chessaibattle.persistence.entity.Lap;
+import com.github.jenkaby.chessaibattle.persistence.entity.PlayerSettings;
 import com.github.jenkaby.chessaibattle.persistence.repository.LapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -21,13 +25,19 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class BaseGameService implements GameService {
 
+    private final Map<String, Integer> moveCounters = new ConcurrentHashMap<>();
+
     @Qualifier("whitePlayerService")
     private final PlayerService whitePlayer;
 
     @Qualifier("blackPlayerService")
     private final PlayerService blackPlayer;
     private final LapRepository lapRepository;
-    private final Map<String, Integer> moveCounters = new ConcurrentHashMap<>();
+    @Value("${app.white-player.model}")
+    private final String whitePlayerModel;
+    @Value("${app.black-player.model}")
+    private final String blackPlayerModel;
+    private final PromptTemplate promptTemplate;
 
     @Override
     public Lap updateGame(SseEmitter emitter, String lapId, GameStatus status) throws IOException {
@@ -90,6 +100,8 @@ public class BaseGameService implements GameService {
         var now = Instant.now();
         var lap = lapRepository.findDistinctByLapId(lapId)
                 .orElse(Lap.builder()
+                        .blackPlayerSettings(new PlayerSettings(blackPlayerModel, promptTemplate.getTemplate()))
+                        .whitePlayerSettings(new PlayerSettings(whitePlayerModel, promptTemplate.getTemplate()))
                         .lapId(lapId)
                         .status(GameStatus.START)
                         .startedAt(now)
@@ -111,12 +123,13 @@ public class BaseGameService implements GameService {
         try {
             SseEmitter.SseEventBuilder event = SseEmitter.event()
                     .id(String.valueOf(id))
-                    .data(Map.of(
-                            "turn", id,
-                            "lapId", lapId,
-                            "movement", movement.notation(),
-                            "player", player.getPlayer(),
-                            "reason", movement.reason()))
+                    .data(ChessMovementEvent.builder()
+                            .turn(id)
+                            .lapId(lapId)
+                            .movement(movement.notation())
+                            .player(player.getPlayer())
+                            .reason(movement.reason())
+                            .build())
                     .name("move");
             emitter.send(event);
             log.debug("Sent SSE event for lapId {}: player={}, movement={}", lapId, player.getPlayer(), movement.notation());
