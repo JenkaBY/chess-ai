@@ -34,13 +34,13 @@ export class GameInfoComponent {
       return;
     }
 
-    const success = this.gameService.makeMoveByNotation(this.moveNotation.trim());
+    const moveResult = this.gameService.makeMoveByNotation(this.moveNotation.trim());
 
-    if (success) {
+    if (moveResult.success) {
       this.moveNotation = '';
       this.errorMessage = '';
     } else {
-      this.errorMessage = 'Invalid move notation. Please check and try again.';
+      this.errorMessage = moveResult.errorMessage || 'Invalid move notation. Please check and try again.';
     }
   }
 

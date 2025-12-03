@@ -2,6 +2,7 @@ import {Injectable, NgZone} from '@angular/core';
 import {Observable} from 'rxjs';
 
 export interface ChessMoveEvent {
+  turn: number;
   movement: string;
   player: 'WHITE' | 'BLACK';
   reason: string;

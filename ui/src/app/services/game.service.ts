@@ -9,6 +9,7 @@ import {BoardInitializerService} from './board-initializer.service';
 import {MoveValidatorService} from './move-validator.service';
 import {NotationService} from './notation.service';
 import {FenService} from './fen.service';
+import {ChessMoveResult} from '../models/chess-move-response';
 
 /**
  * Main game service that manages the chess game state
@@ -65,12 +66,16 @@ export class GameService {
   /**
    * Attempt to make a move
    */
-  makeMove(from: BoardPosition, to: BoardPosition): boolean {
+  makeMove(from: BoardPosition, to: BoardPosition): ChessMoveResult {
     const state = this.gameStateSignal();
     const piece = state.board[from.row][from.col];
 
     if (!piece || piece.color !== state.currentTurn) {
-      return false;
+
+      return {
+        success: false,
+        errorMessage: 'No piece of current player at the source position'
+      };
     }
 
     const validMoves = this.getValidMoves(from);
@@ -79,23 +84,32 @@ export class GameService {
     );
 
     if (!isValidMove) {
-      return false;
+      return {
+        success: false,
+        errorMessage: 'Invalid move for the selected piece'
+      };
     }
 
     // Execute the move
     this.executeMoveInternal(from, to);
-    return true;
+    return {
+      success: true
+    };
   }
 
   /**
    * Make a move using algebraic notation
    */
-  makeMoveByNotation(notation: string): boolean {
+  makeMoveByNotation(notation: string): ChessMoveResult {
+    // TODO return object with success and error message
     const state = this.gameStateSignal();
     const parsedMove = this.notationService.parseAlgebraic(notation, state.currentTurn);
 
     if (!parsedMove) {
-      return false;
+      return {
+        success: false,
+        errorMessage: `Notation '${notation}' could not be parsed`
+      };
     }
 
     // Find the piece that can make this move
@@ -131,7 +145,10 @@ export class GameService {
       }
     }
 
-    return false;
+    return {
+      success: false,
+      errorMessage: `No valid piece found to make the move '${notation}'`
+    };
   }
 
   /**

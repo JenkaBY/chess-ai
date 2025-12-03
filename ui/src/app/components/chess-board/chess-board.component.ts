@@ -73,7 +73,7 @@ export class ChessBoardComponent {
       // Try to make a move
       const moveSuccess = this.gameService.makeMove(selected, position);
 
-      if (moveSuccess) {
+      if (moveSuccess.success) {
         this.selectedSquare.set(null);
         this.validMoves.set([]);
       } else {

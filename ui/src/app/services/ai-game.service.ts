@@ -61,19 +61,17 @@ export class AiGameService {
    * Handle incoming move event from SSE stream
    */
   private handleMoveEvent(event: ChessMoveEvent): void {
-    console.log('Received move event:', event);
-
     // Make the move using algebraic notation
-    const success = this.gameService.makeMoveByNotation(event.movement);
+    const moveResult = this.gameService.makeMoveByNotation(event.movement);
 
-    if (success) {
+    if (moveResult.success) {
       // Show toast with player and reason
       const toastMessage = `${event.player}: ${event.reason}`;
       const toastType = event.player === 'WHITE' ? 'info' : 'success';
-      this.toastService.show(toastMessage, toastType, 6000);
+      this.toastService.show(toastMessage, toastType, 10000);
     } else {
-      console.error('Failed to make move:', event.movement);
-      this.toastService.show(`Invalid move: ${event.movement}`, 'error');
+      console.error(`Failed to make move: ${event.movement} by reason: ${moveResult.errorMessage}`);
+      this.toastService.show(`Invalid move: ${event.movement}. Reason ${moveResult.errorMessage}`, 'error');
     }
   }
 
@@ -91,4 +89,3 @@ export class AiGameService {
     return this.currentLapId;
   }
 }
-
