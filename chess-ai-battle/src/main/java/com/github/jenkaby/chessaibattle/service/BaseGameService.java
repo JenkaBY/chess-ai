@@ -112,6 +112,7 @@ public class BaseGameService implements GameService {
             SseEmitter.SseEventBuilder event = SseEmitter.event()
                     .id(String.valueOf(id))
                     .data(Map.of(
+                            "turn", id,
                             "movement", movement.notation(),
                             "player", player.getPlayer(),
                             "reason", movement.reason()))
