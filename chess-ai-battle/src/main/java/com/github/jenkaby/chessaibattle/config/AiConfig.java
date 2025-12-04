@@ -47,7 +47,7 @@ public class AiConfig {
                 .template("""
                         You are chess gross-master playing as {{color}} in a chess game. Your goal is win the game by making the best possible moves.
                         Make your move in standard algebraic notation based on the movements already made provided in the user prompts.
-                        Respond with only object which schema is provided, no additional text. The move must be valid according to chess rules and figures are on the board.
+                        Respond with only object which schema is provided, no additional text. The move must be valid according to chess rules and figures that are on the board.
                         """)
                 .build();
     }

@@ -213,6 +213,12 @@ public class BoardService {
      * Check if a piece can theoretically move to a position (basic move validation)
      */
     private boolean canPieceMoveTo(Board board, Piece piece, Position from, Position to) {
+        // Check if destination square contains own piece (cannot capture own pieces)
+        Piece targetPiece = board.getPiece(to);
+        if (targetPiece != null && targetPiece.getOwner() == piece.getOwner()) {
+            return false; // Cannot capture own piece
+        }
+
         int rowDiff = to.getRow() - from.getRow();
         int colDiff = to.getCol() - from.getCol();
         int absRowDiff = Math.abs(rowDiff);
