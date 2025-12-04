@@ -1,0 +1,17 @@
+services:
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+
+volumes:
+  mongo-data:
+  mongo-config:
+
+networks:
+  default:
+    name: chess-ai-battle-network
