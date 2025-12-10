@@ -44,7 +44,7 @@ export class ChessBoardComponent {
   }
 
   isLightSquare(row: number, col: number): boolean {
-    return (row + col) % 2 !== 0;
+    return (row + col) % 2 === 0;
   }
 
   isSquareSelected(row: number, col: number): boolean {

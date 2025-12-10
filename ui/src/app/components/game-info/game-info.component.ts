@@ -105,7 +105,7 @@ export class GameInfoComponent implements OnDestroy {
 
     console.log('📡 Creating replay subscription in GameInfoComponent for lapId:', lapId);
 
-    this.replaySubscription = this.sseService.replayLap(lapId, 1500).subscribe({
+    this.replaySubscription = this.sseService.replayLap(lapId, 2000).subscribe({
       next: (moveEvent) => {
         console.log('✅ Replay move received in GameInfoComponent:', moveEvent);
 
