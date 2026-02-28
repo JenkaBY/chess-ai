@@ -8,6 +8,23 @@ services:
       - mongo-data:/data/db
       - mongo-config:/data/configdb
 
+  api-service:
+    build:
+      context: ..
+      dockerfile: chess-ai-battle/Dockerfile
+      args:
+        SERVICE: chess-ai-battle
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/chess-ai-battle
+      - SERVER_PORT=80
+    depends_on:
+      - mongo
+    profiles:
+      - app
+
 volumes:
   mongo-data:
   mongo-config:
