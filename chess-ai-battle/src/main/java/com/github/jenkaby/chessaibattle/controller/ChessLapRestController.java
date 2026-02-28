@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-@CrossOrigin("http://localhost:4200")
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/chess-laps")

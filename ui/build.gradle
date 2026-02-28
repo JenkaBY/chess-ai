@@ -51,7 +51,7 @@ tasks.register('helpAngularApp', NpxTask) {
 tasks.register('ngServe', NpxTask) {
     dependsOn npmInstall
     command = 'ng'
-    args = ['serve', '--open']
+  args = ['serve', '--open', '--configuration=development']
 }
 
 tasks.register('buildAngularApp', NpxTask) {
