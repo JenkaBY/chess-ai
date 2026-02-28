@@ -1,19 +1,18 @@
-import {Injectable} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {LapDto} from '../models/lap.model';
+import {API_BASE_URL} from '../core/tokens/api-base-url.token';
 
 /**
  * Service for managing chess laps/games
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LapService {
-  private readonly apiUrl = 'http://localhost:8080/api/v1/chess-laps';
-
-  constructor(private http: HttpClient) {
-  }
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${inject(API_BASE_URL)}/chess-laps`;
 
   /**
    * Get latest laps with pagination
@@ -29,4 +28,3 @@ export class LapService {
     return this.http.get<LapDto[]>(this.apiUrl, {params});
   }
 }
-
