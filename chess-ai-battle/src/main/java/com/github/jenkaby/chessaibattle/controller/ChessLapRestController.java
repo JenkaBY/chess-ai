@@ -1,5 +1,6 @@
 package com.github.jenkaby.chessaibattle.controller;
 
+import com.github.jenkaby.chessaibattle.config.AppFeaturesProperties;
 import com.github.jenkaby.chessaibattle.controller.payload.GameStatusRequest;
 import com.github.jenkaby.chessaibattle.model.GameStatus;
 import com.github.jenkaby.chessaibattle.model.LapDto;
@@ -10,6 +11,7 @@ import com.github.jenkaby.chessaibattle.service.ReplayChessGameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ public class ChessLapRestController {
     private final ExecutorService executorService;
     private final ReplayChessGameService replayChessGameService;
     private final LapService lapService;
+    private final AppFeaturesProperties appFeaturesProperties;
 
     @PutMapping(path = "/{lapId}",
             consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,8 +49,13 @@ public class ChessLapRestController {
     }
 
     @GetMapping(path = "/{lapId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter streamChessUpdates(@PathVariable("lapId") String lapId) {
+    public ResponseEntity<SseEmitter> streamChessUpdates(@PathVariable("lapId") String lapId) {
         log.info("Requesting SSE for lap {}", lapId);
+
+        if (!appFeaturesProperties.getAiPlay().isEnabled()) {
+            log.warn("AI play feature is disabled. Rejecting SSE request for lap {}", lapId);
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+        }
 
         var emitter = new SseEmitter(0L); // No timeout
 
@@ -65,7 +73,7 @@ public class ChessLapRestController {
             }
         });
 
-        return emitter;
+        return ResponseEntity.ok(emitter);
     }
 
     @GetMapping(path = "/{lapId}/replay", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
