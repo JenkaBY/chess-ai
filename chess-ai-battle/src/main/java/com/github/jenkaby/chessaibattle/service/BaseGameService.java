@@ -29,6 +29,8 @@ import java.util.Optional;
 @Service
 public class BaseGameService implements GameService {
 
+    @Value("${app.max-turns}")
+    private final Integer maxTurnsNumber;
     @Qualifier("whitePlayerService")
     private final PlayerService whitePlayer;
 
@@ -52,6 +54,15 @@ public class BaseGameService implements GameService {
         while (lap.status() == GameStatus.START) {
             List<Movement> allMovements = movementRepository.findAllByLapIdOrderByMovedAt(lap.lapId());
             var currentTurn = allMovements.size() + 1;
+            if (currentTurn > maxTurnsNumber) {
+                emitter.send(
+                        SseEmitter.event()
+                                .id(String.valueOf(currentTurn))
+                                .name("end_game")
+                                .data("Game is over. The number of turns has reached the maximum limit of " + maxTurnsNumber + ". The game is a draw."));
+                makeDraw(lap);
+                break;
+            }
             var currentPlayerColor = getCurrentPlayer(allMovements);
             log.info("{} player is making {} turn for lapId {}", currentPlayerColor, currentTurn, lapId);
             var playerToMove = currentPlayerColor == Player.WHITE ? whitePlayer : blackPlayer;
@@ -67,11 +78,7 @@ public class BaseGameService implements GameService {
                 break;
             }
             if (move.isDraw()) {
-                lap = lap.toBuilder()
-                        .updatedAt(Instant.now())
-                        .status(GameStatus.DRAW)
-                        .build();
-                lapRepository.save(lap);
+                lap = makeDraw(lap);
                 break;
             }
             lap = lapRepository.findDistinctByLapId(lapId).get();
@@ -83,6 +90,15 @@ public class BaseGameService implements GameService {
             );
         }
         emitter.complete();
+        return lap;
+    }
+
+    private @NonNull Lap makeDraw(Lap lap) {
+        lap = lap.toBuilder()
+                .updatedAt(Instant.now())
+                .status(GameStatus.DRAW)
+                .build();
+        lapRepository.save(lap);
         return lap;
     }
 

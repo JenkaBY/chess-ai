@@ -1,0 +1,4 @@
+app:
+  cors:
+    allow-credentials: false
+    allowed-origins: [ 'https://jenkaby.github.io','http://localhost:4200' ]

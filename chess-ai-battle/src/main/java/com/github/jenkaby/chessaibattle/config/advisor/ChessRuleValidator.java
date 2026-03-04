@@ -24,7 +24,7 @@ public class ChessRuleValidator {
         }
     }
 
-    record ValidationResponse(boolean isValid, String errorMessage, String notation) {
+    public record ValidationResponse(boolean isValid, String errorMessage, String notation) {
         public static ChessRuleValidator.ValidationResponse asValid(String notation) {
             return new ChessRuleValidator.ValidationResponse(true, null, notation);
         }

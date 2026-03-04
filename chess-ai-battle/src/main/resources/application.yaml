@@ -21,6 +21,7 @@ logging:
     com.github.jenkaby.chessaibattle.service.ReplayChessGameService: DEBUG
 
 app:
+  max-turns: 100
   black-player:
     model: gpt-5-nano
   white-player:
