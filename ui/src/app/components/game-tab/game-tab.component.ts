@@ -1,34 +1,54 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnChanges, Output, signal, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
 import {HelpModalComponent} from '../help-modal/help-modal.component';
 import {AiGameService} from '../../services/ai-game.service';
+import {AiDisabledModalComponent} from '../ai-disabled-modal/ai-disabled-modal.component';
+import {AiGameHelpModalComponent} from '../ai-game-help-modal/ai-game-help-modal.component';
+import {ENABLE_LIVE_AI_GAME} from '../../core/tokens/enable-live-ai-game.token';
 
 @Component({
   selector: 'app-game-tab',
   standalone: true,
-  imports: [CommonModule, FormsModule, HelpModalComponent],
+  imports: [CommonModule, FormsModule, HelpModalComponent, AiDisabledModalComponent, AiGameHelpModalComponent],
   templateUrl: './game-tab.component.html',
   styleUrls: ['./game-tab.component.css']
 })
-export class GameTabComponent {
+export class GameTabComponent implements OnChanges {
   @Input() gameService!: GameService;
   @Input() moveNotation = '';
   @Input() errorMessage = '';
+  @Input() initialAiLapId = '';
   @Output() moveNotationChange = new EventEmitter<string>();
   @Output() errorMessageChange = new EventEmitter<string>();
   @Output() submitMoveEvent = new EventEmitter<void>();
   @Output() resetGameEvent = new EventEmitter<void>();
+  @Output() openReplayTab = new EventEmitter<void>();
 
   showHelp = false;
   aiLapId = '';
 
+  readonly showAiDisabledModal = signal(false);
+  readonly showAiHelp = signal(false);
+
+  readonly liveAiGameEnabled = inject(ENABLE_LIVE_AI_GAME);
+
   constructor(public aiGameService: AiGameService) {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialAiLapId'] && changes['initialAiLapId'].currentValue) {
+      this.aiLapId = changes['initialAiLapId'].currentValue;
+    }
   }
 
   toggleHelp(): void {
     this.showHelp = !this.showHelp;
+  }
+
+  toggleAiHelp(): void {
+    this.showAiHelp.update(v => !v);
   }
 
   onMoveNotationChange(value: string): void {
@@ -44,6 +64,10 @@ export class GameTabComponent {
   }
 
   startAiGame(): void {
+    if (!this.liveAiGameEnabled) {
+      this.showAiDisabledModal.set(true);
+      return;
+    }
     if (this.aiLapId.trim()) {
       this.aiGameService.startAiGame(this.aiLapId.trim());
     }
@@ -51,6 +75,10 @@ export class GameTabComponent {
 
   stopAiGame(): void {
     this.aiGameService.stopAiGame();
+  }
+
+  onAiDisabledModalOpenReplay(): void {
+    this.openReplayTab.emit();
   }
 
   getLastTenMoves(): any[] {

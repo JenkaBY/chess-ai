@@ -29,8 +29,56 @@
     }
   </div>
 
+  <!-- AI Game Control Section -->
+  <div class="ai-game-section">
+    <div class="title-container">
+      <h3>AI Game Control</h3>
+      <button
+        type="button"
+        class="help-btn"
+        aria-label="Show AI Game Control help"
+        (click)="toggleAiHelp()"
+      >?
+      </button>
+    </div>
+    <div class="input-group">
+      <input
+        type="text"
+        [(ngModel)]="aiLapId"
+        placeholder="Enter Lap ID"
+        [disabled]="aiGameService.isAiGameActive()"
+        aria-label="Enter lap ID for AI game"
+      />
+      @if (!aiGameService.isAiGameActive()) {
+        <button
+          (click)="startAiGame()"
+          [disabled]="!aiLapId.trim()"
+          class="ai-start-button"
+          [attr.aria-label]="liveAiGameEnabled ? 'Start AI game' : 'Live AI game is disabled'"
+        >
+          {{ liveAiGameEnabled ? 'Start AI' : '🔒 Start AI' }}
+        </button>
+      } @else {
+        <button
+          (click)="stopAiGame()"
+          class="ai-stop-button"
+        >
+          {{ aiGameService.isReplayActive() ? 'Stop Replay' : 'Stop AI' }}
+        </button>
+      }
+    </div>
+    @if (aiGameService.isAiGameActive()) {
+      <div class="ai-status">
+        <span class="ai-active-indicator">
+          {{ aiGameService.isReplayActive() ? '▶️ Replaying' : '🤖 AI Active' }}
+          - Lap: {{ aiGameService.getCurrentLapId() }}
+        </span>
+      </div>
+    }
+  </div>
+
   <!-- Move Input Section with Help Button -->
-  <div class="notation-input-section">
+  <div class="notation-input-section" style="display: none;">
     <div class="title-container">
       <h3>Enter Move</h3>
       <button
@@ -63,40 +111,6 @@
     }
   </div>
 
-  <!-- AI Game Control Section -->
-  <div class="ai-game-section">
-    <h3>AI Game Control</h3>
-    <div class="input-group">
-      <input
-        type="text"
-        [(ngModel)]="aiLapId"
-        placeholder="Enter Lap ID"
-        [disabled]="aiGameService.isAiGameActive()"
-        aria-label="Enter lap ID for AI game"
-      />
-      @if (!aiGameService.isAiGameActive()) {
-        <button
-          (click)="startAiGame()"
-          [disabled]="!aiLapId.trim()"
-          class="ai-start-button"
-        >
-          Start AI
-        </button>
-      } @else {
-        <button
-          (click)="stopAiGame()"
-          class="ai-stop-button"
-        >
-          Stop AI
-        </button>
-      }
-    </div>
-    @if (aiGameService.isAiGameActive()) {
-      <div class="ai-status">
-        <span class="ai-active-indicator">🤖 AI Active - Lap: {{ aiGameService.getCurrentLapId() }}</span>
-      </div>
-    }
-  </div>
 
   <!-- Last 10 Moves -->
   <div class="last-moves-section">
@@ -143,4 +157,17 @@
 
   <!-- Help Modal -->
   <app-help-modal [show]="showHelp" (close)="toggleHelp()"></app-help-modal>
+
+  <!-- AI Game Control Help Modal -->
+  @if (showAiHelp()) {
+    <app-ai-game-help-modal (close)="showAiHelp.set(false)"></app-ai-game-help-modal>
+  }
+
+  <!-- AI Disabled Modal -->
+  @if (showAiDisabledModal()) {
+    <app-ai-disabled-modal
+      (close)="showAiDisabledModal.set(false)"
+      (openReplay)="onAiDisabledModalOpenReplay()"
+    ></app-ai-disabled-modal>
+  }
 </div>

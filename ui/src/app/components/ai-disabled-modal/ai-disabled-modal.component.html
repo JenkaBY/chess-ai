@@ -1,0 +1,35 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()" role="dialog" aria-modal="true"
+       aria-labelledby="ai-disabled-title">
+
+    <div class="modal-header">
+      <span class="modal-icon">🚫</span>
+      <h2 id="ai-disabled-title">Live AI Game Unavailable</h2>
+    </div>
+
+    <div class="modal-body">
+      <p>
+        The <strong>Live AI Game</strong> feature is currently <strong>disabled</strong> in this environment.
+        The AI battle backend is not available for on-demand games at the moment.
+      </p>
+      <div class="suggestion-box">
+        <span class="suggestion-icon">▶️</span>
+        <div>
+          <strong>Try the Replay tab instead!</strong>
+          <p>
+            You can watch any previously played AI vs AI game by opening the
+            <strong>Replay</strong> tab, selecting a game from the list, and pressing
+            <em>Replay</em>. All moves are replayed step-by-step on the board.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-secondary" (click)="onClose()">Close</button>
+      <button class="btn-primary" (click)="onOpenReplay()">Go to Replay Tab</button>
+    </div>
+
+  </div>
+</div>
+

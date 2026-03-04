@@ -1,0 +1,59 @@
+<div class="modal-overlay" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()" role="dialog" aria-modal="true"
+       aria-labelledby="ai-help-title">
+
+    <div class="modal-header">
+      <h2 id="ai-help-title">🤖 AI Game Control — Help</h2>
+      <button class="close-button" (click)="onClose()" aria-label="Close help">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <section>
+        <h3>What is the Lap ID?</h3>
+        <p>
+          A <strong>Lap</strong> is a single AI vs AI chess game stored on the server.
+          Each lap has a unique numeric or string identifier called the <strong>Lap ID</strong>.
+          You need to enter this ID to connect the board to the corresponding game stream.
+        </p>
+        <p>You can find existing Lap IDs in the <strong>Replay</strong> tab.</p>
+        <p>First, you need to replay the chosen lap, once all events are replayed, you can start the AI game and watch
+          its continuation live.</p>
+      </section>
+
+      <section>
+        <h3>Start AI</h3>
+        <p>
+          Entering a non existing valid Lap ID (any string) and clicking <strong>Start AI</strong> will open a
+          live Server-Sent Events (SSE) stream and replay the moves on the board in
+          real time as the AI players make them.
+        </p>
+      </section>
+
+      <section>
+        <h3>Stop AI / Stop Replay</h3>
+        <p>
+          Click <strong>Stop AI</strong> (or <strong>Stop Replay</strong> during a replay)
+          at any time to disconnect from the stream and freeze the board at the current position.
+        </p>
+      </section>
+
+      <section>
+        <h3>Replay tab</h3>
+        <p>
+          The <strong>Replay</strong> tab lists all previously recorded games.
+          Click <em>Replay</em> next to any game to watch it move-by-move on the board
+          without needing to enter a Lap ID manually.
+        </p>
+      </section>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="close-button-footer" (click)="onClose()">Got it</button>
+    </div>
+
+  </div>
+</div>
+
+

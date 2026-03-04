@@ -10,17 +10,17 @@
     </button>
     <button
       class="tab-button"
-      [class.active]="activeTab() === 'history'"
-      (click)="setActiveTab('history')"
+      [class.active]="activeTab() === 'replay'"
+      (click)="setActiveTab('replay')"
     >
-      History
+      Replays
     </button>
     <button
       class="tab-button"
-      [class.active]="activeTab() === 'laps'"
-      (click)="setActiveTab('laps')"
+      [class.active]="activeTab() === 'history'"
+      (click)="setActiveTab('history')"
     >
-      Laps
+      Move History
     </button>
   </div>
 
@@ -32,10 +32,12 @@
         [gameService]="gameService"
         [moveNotation]="moveNotation"
         [errorMessage]="errorMessage"
+        [initialAiLapId]="replayLapId()"
         (moveNotationChange)="moveNotation = $event"
         (errorMessageChange)="errorMessage = $event"
         (submitMoveEvent)="submitMove()"
         (resetGameEvent)="resetGame()"
+        (openReplayTab)="setActiveTab('replay')"
       ></app-game-tab>
     }
 
@@ -48,7 +50,7 @@
     }
 
     <!-- Laps Tab -->
-    @if (activeTab() === 'laps') {
+    @if (activeTab() === 'replay') {
       <app-laps-tab (replayRequested)="handleReplayRequest($event)"></app-laps-tab>
     }
   </div>

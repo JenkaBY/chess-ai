@@ -33,7 +33,7 @@ public class AiPlayerService implements PlayerService {
                 .map(Movement::notation)
                 .collect(Collectors.joining(",", "[", "]"));
 
-        log.debug("lap id {} player {}", lapId, player.name());
+        log.info("[lapId={}] AI player {} is making turn", lapId, player.name());
 
         var newTurn = chatClient.prompt().user(movements)
                 .advisors(a ->
@@ -42,7 +42,7 @@ public class AiPlayerService implements PlayerService {
                                 .param(BOARD_KEY, boardService.getCurrentBoard(allMovements)))
                 .call()
                 .entity(AiChessMovement.class);
-        log.info("lapId {} player {} made the movement: {}", lapId, player.name(), newTurn);
+        log.info("[lapId={}] AI player {} has made the turn: {}", lapId, player.name(), newTurn);
 
         var playerMovement = Movement.builder()
                 .lapId(lapId)
