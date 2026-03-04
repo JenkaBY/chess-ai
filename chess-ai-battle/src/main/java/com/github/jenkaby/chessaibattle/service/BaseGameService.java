@@ -82,12 +82,6 @@ public class BaseGameService implements GameService {
                 break;
             }
             lap = lapRepository.findDistinctByLapId(lapId).get();
-            emitter.send(
-                    SseEmitter.event()
-                            .id(String.valueOf(currentTurn + 1))
-                            .name("end_game")
-                            .data("Game is over. Game status is " + lap.status() + (lap.winner() != null ? ". Winner is " + lap.winner() : ""))
-            );
         }
         emitter.complete();
         return lap;
