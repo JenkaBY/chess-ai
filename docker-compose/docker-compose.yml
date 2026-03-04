@@ -14,7 +14,7 @@ services:
       dockerfile: chess-ai-battle/Dockerfile
       args:
         SERVICE: chess-ai-battle
-    restart: always
+    restart: no
     ports:
       - "8080:80"
     environment:
