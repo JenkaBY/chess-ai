@@ -10,6 +10,16 @@ export interface ChessMoveEvent {
   reason: string;
 }
 
+/** Emitted when the backend sends an `end_game` SSE event. */
+export interface EndGameEvent {
+  message: string;
+}
+
+/** Discriminated union of all SSE game events. */
+export type SseGameEvent =
+  | { type: 'move'; data: ChessMoveEvent }
+  | { type: 'end_game'; data: EndGameEvent };
+
 @Injectable({
   providedIn: 'root',
 })
@@ -20,9 +30,9 @@ export class SseService {
   /**
    * Connect to SSE endpoint and listen for chess move events.
    * @param lapId The lap/game ID to stream
-   * @returns Observable of chess move events
+   * @returns Observable of SSE game events (move or end_game)
    */
-  connectToGameStream(lapId: string): Observable<ChessMoveEvent> {
+  connectToGameStream(lapId: string): Observable<SseGameEvent> {
     return new Observable(observer => {
       const url = `${this.apiBaseUrl}/chess-laps/${lapId}/stream`;
       const eventSource = new EventSource(url);
@@ -30,7 +40,8 @@ export class SseService {
       eventSource.onmessage = (event) => {
         this.zone.run(() => {
           try {
-            observer.next(JSON.parse(event.data) as ChessMoveEvent);
+            const data = JSON.parse(event.data) as ChessMoveEvent;
+            observer.next({type: 'move', data});
           } catch (error) {
             console.error('Error parsing SSE data:', error);
           }
@@ -41,10 +52,20 @@ export class SseService {
       eventSource.addEventListener('move', (event: MessageEvent) => {
         this.zone.run(() => {
           try {
-            observer.next(JSON.parse(event.data) as ChessMoveEvent);
+            const data = JSON.parse(event.data) as ChessMoveEvent;
+            observer.next({type: 'move', data});
           } catch (error) {
             console.error('Error parsing move event data:', error);
           }
+        });
+      });
+
+      // Listen for end_game event – data is a plain string, not JSON
+      eventSource.addEventListener('end_game', (event: MessageEvent) => {
+        this.zone.run(() => {
+          observer.next({type: 'end_game', data: {message: event.data as string}});
+          eventSource.close();
+          observer.complete();
         });
       });
 

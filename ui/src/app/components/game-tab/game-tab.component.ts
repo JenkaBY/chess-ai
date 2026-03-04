@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {GameService} from '../../services/game.service';
@@ -12,10 +12,11 @@ import {AiGameService} from '../../services/ai-game.service';
   templateUrl: './game-tab.component.html',
   styleUrls: ['./game-tab.component.css']
 })
-export class GameTabComponent {
+export class GameTabComponent implements OnChanges {
   @Input() gameService!: GameService;
   @Input() moveNotation = '';
   @Input() errorMessage = '';
+  @Input() initialAiLapId = '';
   @Output() moveNotationChange = new EventEmitter<string>();
   @Output() errorMessageChange = new EventEmitter<string>();
   @Output() submitMoveEvent = new EventEmitter<void>();
@@ -25,6 +26,12 @@ export class GameTabComponent {
   aiLapId = '';
 
   constructor(public aiGameService: AiGameService) {
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialAiLapId'] && changes['initialAiLapId'].currentValue) {
+      this.aiLapId = changes['initialAiLapId'].currentValue;
+    }
   }
 
   toggleHelp(): void {
