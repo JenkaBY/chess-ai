@@ -29,18 +29,19 @@ public class BoardService {
             String notation = movement.notation();
             Player player = movement.player();
 
+            int moveNumber = i + 1;
             try {
                 ChessMovement chessMovement = parseMovement(notation, board, player);
                 chessMovement.applyTo(board);
                 board.switchTurn();
 
-                log.debug("Applied move {}: {} ({}) - {}", i + 1, notation, player, movement.reason());
+                log.debug("Applied move {}: {} ({}) - {}", moveNumber, notation, player, movement.reason());
             } catch (Exception e) {
                 log.error("Failed to apply move {}: {} for player {} - {}",
-                        i + 1, notation, player, movement.reason(), e);
+                        moveNumber, notation, player, movement.reason(), e);
                 throw new IllegalArgumentException(
-                        String.format("Invalid move at position %d: %s (player: %s, reason: %s)",
-                                i + 1, notation, player, movement.reason()), e);
+                        String.format("Invalid move at move %d: %s (player: %s, reason: %s)",
+                                moveNumber, notation, player, movement.reason()), e);
             }
         }
 
